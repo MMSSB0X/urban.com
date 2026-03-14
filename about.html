@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Urban Food Insecurity Solutions</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo-container">
+                <div class="logo-icon-wrapper">
+                     <i class="ph-fill ph-plant" style="font-size: 2rem;"></i>
+                </div>
+                <span>Urban<span class="text-highlight"></span></span>
+            </a>
+
+            <input type="checkbox" id="menu-toggle">
+            <label for="menu-toggle" class="hamburger">
+                <span></span><span></span><span></span>
+            </label>
+
+            <div class="nav-menu-wrapper">
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html" class="active">About</a></li>
+                    <!-- <li><a href="#">Problems</a></li>
+                    <li><a href="#">Solutions</a></li> -->
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+                <div class="nav-auth">
+                    <button class="btn-text" onclick="window.location.href='app/login.html'"><i class="ri-user-line" style="margin-right: 5px;" ></i> Log in</button>
+                    <button class="btn btn-primary" onclick="window.location.href='app/signup.html'">Sign up <i class="ri-arrow-right-line"></i></button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <header class="page-header">
+        <div class="hero-bg-blob"></div>
+        <div class="container" style="position: relative; z-index: 1;">
+            <h1 class="hero-title"><span class="gradient-text">Our Mission</span></h1>
+            <p class="hero-text" style="margin: 0 auto;">
+                We are a collective of urban planners, agricultural experts, and community advocates dedicated to eradicating food deserts in modern cities.
+            </p>
+        </div>
+    </header>
+    <section class="about-content">
+        <div class="container">
+            <div class="grid-2">
+                <div class="about-text-content">
+                    <h2 class="section-title" style="text-align: left; margin-bottom: 1.5rem;">Cultivating Change in <br><span class="text-highlight">Concrete Jungles</span></h2>
+                    <p style="color: var(--text-muted); font-size: 1.125rem; margin-bottom: 1.5rem;">
+                        Founded in 2021, the Urban Food Initiative started with a single rooftop garden and a simple goal: ensure that every family within our city limits has walking access to fresh, affordable produce.
+                    </p>
+                    <p style="color: var(--text-muted); font-size: 1.125rem; margin-bottom: 2rem;">
+                        Today, we partner with local governments, schools, and private citizens to transform abandoned lots and unused urban spaces into thriving agricultural hubs. We believe that sustainable food systems are the foundation of healthy, resilient communities.
+                    </p>
+                    <div class="check-list">
+                        <div class="check-item"><i class="ri-checkbox-circle-fill text-highlight"></i> 150+ Active Community Gardens</div>
+                        <div class="check-item"><i class="ri-checkbox-circle-fill text-highlight"></i> 50,000 lbs of Produce Harvested</div>
+                        <div class="check-item"><i class="ri-checkbox-circle-fill text-highlight"></i> Educational Programs in 40 Schools</div>
+                    </div>
+                </div>
+                <div class="about-image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1592424001807-f32777bce4fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Community volunteers gardening" class="rounded-image shadow-lg">
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="challenges-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">What Drives Us</span>
+                <h2 class="section-title">Our Core Values</h2>
+            </div>
+            <div class="grid-3">
+                <div class="feature-card">
+                    <div class="card-icon-wrapper bg-green" style="color: white; background: var(--primary);">
+                        <i class="ph-duotone ph-users-three"></i>
+                    </div>
+                    <h3 class="card-title">Community First</h3>
+                    <p class="card-text">Every solution we implement is driven by the unique needs and voices of the local residents we serve.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="card-icon-wrapper bg-orange" style="color: white; background: #f97316;">
+                        <i class="ph-duotone ph-recycle"></i>
+                    </div>
+                    <h3 class="card-title">Sustainability</h3>
+                    <p class="card-text">We utilize eco-friendly farming methods, composting, and water-conservation techniques to protect our planet.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="card-icon-wrapper bg-amber" style="color: white; background: #0ea5e9;">
+                        <i class="ph-duotone ph-scales"></i>
+                    </div>
+                    <h3 class="card-title">Equity</h3>
+                    <p class="card-text">We fight to ensure that high-quality, nutritious food is a fundamental human right, not a luxury.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    </body>
+</html>

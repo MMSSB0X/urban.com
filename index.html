@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urban Food Insecurity Solutions</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo-container">
+                <div class="logo-icon-wrapper">
+                    <!-- <i class="ri-leaf-fill"></i> -->
+                     <i class="ph-fill ph-plant" style="font-size: 2rem;"></i>
+                </div>
+                <span>Urban<span class="text-highlight"></span></span>
+                <!-- <span>Urban<span class="text-highlight">Food</span></span> -->
+            </a>
+
+            <input type="checkbox" id="menu-toggle">
+            <label for="menu-toggle" class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </label>
+
+            <div class="nav-menu-wrapper">
+                <ul class="nav-links">
+                    <li><a href="index.html" class="active">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <!-- <li><a href="#">Solutions</a></li>
+                    <li><a href="#">Tools</a></li> -->
+                </ul>
+                <div class="nav-auth">
+                    <button class="btn-text" onclick="window.location.href='app/login.html'"><i class="ri-user-line" style="margin-right: 5px;" ></i> Log in</button>
+                    <button class="btn btn-primary" onclick="window.location.href='app/signup.html'">Sign up <i class="ri-arrow-right-line"></i></button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <section class="hero">
+        <div class="hero-bg-blob"></div>
+        <div class="container hero-container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <i class="ri-plant-line"></i> Community First Initiative
+                </div>
+                <h1 class="hero-title">
+                    Urban Food <br>
+                    <span class="gradient-text">Insecurity Solutions</span>
+                </h1>
+                <p class="hero-text">
+                    Working together to create sustainable, community-driven solutions for modern urban food access challenges. Join us in building a greener future.
+                </p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" onclick="window.location.href='app/start.html'">Get Involved <i class="ri-arrow-right-line"></i></button>
+                    <button class="btn btn-outline" onclick="window.location.href='about.html'"><i class="ri-play-circle-line"></i> Read More</button>
+                </div>
+            </div>
+            <div class="hero-image-wrapper">
+                <div class="hero-image-card">
+                    <img src="images/land1.jpg" alt="Urban farming" class="hero-image">
+                    <div class="floating-badge">
+                        <i class="ph-duotone ph-leaf"></i>
+                        <div>
+                            <strong>10k+</strong>
+                            <span>Meals Provided</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="stats-section">
+        <div class="container">
+            <h2 class="section-title">The Impact of <span class="text-highlight">Food Insecurity</span></h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="ph-duotone ph-chart-line-up"></i></div>
+                    <div class="stat-number">10.5%</div>
+                    <p class="stat-text">of American households experienced food insecurity in 2021</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="ph-duotone ph-house-line"></i></div>
+                    <div class="stat-number">23.5M</div>
+                    <p class="stat-text">Americans live in food deserts with limited access to fresh food</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="ph-duotone ph-currency-dollar"></i></div>
+                    <div class="stat-number">30%</div>
+                    <p class="stat-text">higher cost for fresh produce compared to processed alternatives</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="challenges-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Key Challenges</h2>
+                <p class="section-subtitle">
+                    Food insecurity in urban areas is driven by multiple interconnected factors that create barriers to accessing nutritious food.
+                </p>
+            </div>
+
+            <div class="grid-3">
+                <div class="feature-card">
+                    <div class="card-icon-wrapper danger">
+                        <i class="ph-duotone ph-storefront"></i>
+                    </div>
+                    <h3 class="card-title">Food Deserts</h3>
+                    <p class="card-text">Areas with limited access to affordable food, often filled with processed options and lacking fresh produce.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="card-icon-wrapper warning">
+                        <i class="ph-duotone ph-wallet"></i>
+                    </div>
+                    <h3 class="card-title">Economic Barriers</h3>
+                    <p class="card-text">Fresh, nutritious food often costs significantly more than processed alternatives, putting it out of reach.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="card-icon-wrapper info">
+                        <i class="ph-duotone ph-books"></i>
+                    </div>
+                    <h3 class="card-title">Lack of Education</h3>
+                    <p class="card-text">Limited knowledge about healthy eating patterns and food preparation creates barriers to good nutrition.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="solutions-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Our Approach</span>
+                <h2 class="section-title">Community-Driven Solutions</h2>
+                <p class="section-subtitle">
+                    We believe in empowering communities to create sustainable solutions that address urban food insecurity at its root causes.
+                </p>
+            </div>
+
+            <div class="grid-3">
+                <div class="solution-card border-green">
+                    <div class="sol-icon-box bg-green">
+                        <i class="ph-duotone ph-potted-plant"></i>
+                    </div>
+                    <h3 class="card-title">Community Gardens</h3>
+                    <p class="card-text">Transform vacant lots into vibrant community growing spaces, providing fresh produce and strengthening bonds.</p>
+                </div>
+                <div class="solution-card border-orange">
+                    <div class="sol-icon-box bg-orange">
+                        <i class="ph-duotone ph-handshake"></i>
+                    </div>
+                    <h3 class="card-title">Food Cooperatives</h3>
+                    <p class="card-text">Establish locally-run food cooperatives that provide affordable, fresh options while creating economic opportunities.</p>
+                </div>
+                <div class="solution-card border-amber">
+                    <div class="sol-icon-box bg-amber">
+                        <i class="ph-duotone ph-student"></i>
+                    </div>
+                    <h3 class="card-title">Nutritional Education</h3>
+                    <p class="card-text">School and community-based programs that teach valuable skills about nutrition, cooking, and healthy food choices.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="cta-section">
+        <div class="cta-pattern"></div>
+        <div class="container cta-container">
+            <h2 class="cta-title">Ready to Make an Impact?</h2>
+            <p class="cta-text">
+                Be part of the solution. Sign up to volunteer, receive updates, or learn how to start a community garden in your neighborhood.
+            </p>
+            <div class="cta-buttons">
+                <button class="btn btn-white">Create an Account <i class="ri-arrow-right-line"></i></button>
+                <button class="btn btn-outline-white">Contact Us</button>
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo-container" style="margin-bottom: 1.5rem;">
+                        <div class="logo-icon-wrapper">
+                            <i class="ri-leaf-fill"></i>
+                        </div>
+                        <span>Urban<span class="text-highlight">Food</span></span>
+                    </div>
+                    <p class="footer-text">
+                        Working together to end food insecurity in urban communities through sustainable agriculture, education, and dedicated advocacy.
+                    </p>
+                    <div class="social-icons">
+                        <a href="#" class="social-icon"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="fa-brands fa-linkedin-in"></i></a>
+                        <a href="#" class="social-icon"><i class="fa-brands fa-youtube"></i></a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="footer-heading">Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="ri-arrow-right-s-line"></i> Home</a></li>
+                        <li><a href="#"><i class="ri-arrow-right-s-line"></i> About Us</a></li>
+                        <li><a href="#"><i class="ri-arrow-right-s-line"></i> Our Solutions</a></li>
+                        <li><a href="#"><i class="ri-arrow-right-s-line"></i> Get Involved</a></li>
+                        <li><a href="#"><i class="ri-arrow-right-s-line"></i> Latest News</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="footer-heading">Contact Us</h4>
+                    <ul class="footer-contact">
+                        <li>
+                            <div class="contact-icon"><i class="ri-mail-send-line"></i></div>
+                            <div>
+                                <span>Email Us</span>
+                                <strong>hello@urbanfood.org</strong>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="contact-icon"><i class="ri-phone-line"></i></div>
+                            <div>
+                                <span>Call Us</span>
+                                <strong>(123) 456-7890</strong>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="contact-icon"><i class="ri-map-pin-line"></i></div>
+                            <div>
+                                <span>Location</span>
+                                <strong>123 Green St, NY 10001</strong>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- <div>
+                    <h4 class="footer-heading">Newsletter</h4>
+                    <p class="footer-text" style="margin-bottom: 1rem;">Subscribe to get the latest updates and news.</p>
+                    <form class="newsletter-form">
+                        <i class="ri-mail-line form-icon"></i>
+                        <input type="email" placeholder="Email address" class="newsletter-input" required>
+                        <button type="submit" class="newsletter-btn"><i class="ri-send-plane-fill"></i></button>
+                    </form>
+                </div> -->
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 Urban Food Initiative. All rights reserved.</p>
+                <div class="footer-bottom-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    </body>
+</html>
