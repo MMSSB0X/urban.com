@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Profile - Urban Harvest</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+    <header class="header">
+        <div class="container header-top" style="margin-bottom: 0;">
+            <div style="width: 2.5rem;"></div> 
+            <h2 class="page-title">My Profile</h2>
+            <div style="width: 2.5rem;"></div> 
+        </div>
+    </header>
+
+    <main class="main-content">
+        
+        <div class="profile-header-card">
+            <div class="profile-avatar">
+                <i class="ph-fill ph-user"></i>
+            </div>
+            <div class="profile-info">
+                <h3 id="profile-name">Loading...</h3>
+                <p id="profile-email">user@email.com</p>
+            </div>
+            <button class="edit-profile-btn"><i class="fa-solid fa-pen"></i></button>
+        </div>
+
+        <div class="profile-menu">
+            <a href="#" class="profile-menu-item">
+                <div class="menu-icon"><i class="ri-file-list-3-line"></i></div>
+                <span>My Orders</span>
+                <i class="fa-solid fa-chevron-right arrow"></i>
+            </a>
+            <a href="#" class="profile-menu-item">
+                <div class="menu-icon"><i class="ri-map-pin-line"></i></div>
+                <span>Shipping Addresses</span>
+                <i class="fa-solid fa-chevron-right arrow"></i>
+            </a>
+            <a href="#" class="profile-menu-item">
+                <div class="menu-icon"><i class="ri-bank-card-line"></i></div>
+                <span>Payment Methods</span>
+                <i class="fa-solid fa-chevron-right arrow"></i>
+            </a>
+            <a href="#" class="profile-menu-item">
+                <div class="menu-icon"><i class="ri-notification-3-line"></i></div>
+                <span>Notifications</span>
+                <i class="fa-solid fa-chevron-right arrow"></i>
+            </a>
+            <a href="#" class="profile-menu-item" id="theme-toggle">
+                <div class="menu-icon"><i class="ri-moon-line"></i></div>
+                <span>Toggle Dark Mode</span>
+            </a>
+        </div>
+
+        <button id="logout-btn-full" class="logout-btn-full">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out
+        </button>
+
+    </main>
+
+    <nav class="side-nav" id="sideNav">
+        <a href="index.html" class="nav-item">
+            <i class="ri-store-2-line nav-icon" data-inactive="ri-store-2-line" data-active="ri-store-2-fill"></i>
+            <span class="nav-label">Market</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="ph ph-book-open-text nav-icon" data-inactive="ph ph-book-open-text" data-active="ph-fill ph-book-open-text"></i>
+            <span class="nav-label">Learn</span>
+        </a>
+        <a href="cart.html" class="nav-item">
+            <i class="ri-shopping-cart-line nav-icon" data-inactive="ri-shopping-cart-line" data-active="ri-shopping-cart-fill"></i>
+            <span class="nav-label">Cart</span>
+        </a>
+        <a href="#" class="nav-item active">
+            <i class="ri-user-fill nav-icon" data-inactive="ri-user-line" data-active="ri-user-fill"></i>
+            <span class="nav-label">Profile</span>
+        </a>
+    </nav>
+
+    <script type="module" src="script.js"></script>
+    <script type="module">
+        import { auth } from "./firebase.js";
+        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+
+        // Simple auth check for profile page
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('profile-name').innerText = user.displayName || "Urban Farmer";
+                document.getElementById('profile-email').innerText = user.email;
+            } else {
+                window.location.href = "login.html"; // redirect if not logged in
+            }
+        });
+
+        document.getElementById('logout-btn-full').addEventListener('click', () => {
+            signOut(auth).then(() => window.location.href = "start.html");
+        });
+    </script>
+</body>
+</html>

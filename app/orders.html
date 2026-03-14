@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Order History - Urban Harvest</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+    <div id="global-loader" class="global-loader hidden">
+        <div class="loader-content"><div class="loader-icon"><i class="ph-fill ph-plant"></i></div><div class="loader-ring"></div></div>
+    </div>
+
+    <header class="header">
+        <div class="container header-top" style="margin-bottom: 0;">
+            <a href="profile.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+            <h2 class="page-title">Order History</h2>
+            <div style="width: 2.5rem;"></div> 
+        </div>
+    </header>
+
+    <main class="main-content" style="max-width: 600px;" id="orders-container">
+        <div style="text-align:center; padding: 2rem;">
+            <i class="fa-solid fa-spinner fa-spin text-muted" style="font-size: 2rem;"></i>
+        </div>
+    </main>
+
+    <div class="modal-overlay" id="receipt-modal">
+        <div class="modal-content" style="max-width: 450px; padding: 0;">
+            <div style="background: var(--primary); color: var(--bg-dark); padding: 2rem 1.5rem; text-align: center; position: relative;">
+                <button id="close-receipt" style="position: absolute; top: 1rem; right: 1rem; color: var(--bg-dark); font-size: 1.5rem; background: none; border: none; cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
+                <i class="ph-fill ph-receipt" style="font-size: 3rem; margin-bottom: 0.5rem;"></i>
+                <h3 style="font-weight: 800; font-size: 1.25rem;">Order Receipt</h3>
+                <p style="font-size: 0.875rem; opacity: 0.9;" id="receipt-order-id">#UH-LOADING</p>
+            </div>
+            
+            <div style="padding: 1.5rem; max-height: 60vh; overflow-y: auto;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem; font-size: 0.875rem; color: var(--text-muted); align-items: center;">
+                    <span id="receipt-date">Date</span>
+                    <span id="receipt-status" class="status-badge status-processing">Status</span>
+                </div>
+                
+                <div id="receipt-items" style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 2px dashed var(--card-border); padding-bottom: 1.5rem;">
+                    </div>
+                
+                <div style="display: flex; justify-content: space-between; font-size: 0.875rem; margin-bottom: 0.5rem; color: var(--text-muted);">
+                    <span>Subtotal</span>
+                    <span id="receipt-subtotal">---</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.875rem; margin-bottom: 1rem; color: var(--text-muted);">
+                    <span>Delivery</span>
+                    <span style="color: var(--primary); font-weight: 700;">FREE</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 1.25rem; font-weight: 800; color: var(--text-main); border-top: 2px dashed var(--card-border); padding-top: 1rem;">
+                    <span>Total Amount</span>
+                    <span id="receipt-total">---</span>
+                </div>
+                
+                <div style="margin-top: 1.5rem; background: var(--input-bg); padding: 1rem; border-radius: 0.75rem; font-size: 0.875rem;">
+                    <div style="color: var(--text-muted); margin-bottom: 0.25rem;"><i class="fa-solid fa-location-dot"></i> Shipping to:</div>
+                    <div style="font-weight: 600; color: var(--text-main);" id="receipt-address">...</div>
+                    <div style="color: var(--text-muted); margin-top: 0.75rem;"><i class="fa-solid fa-credit-card"></i> Payment Method:</div>
+                    <div style="font-weight: 600; color: var(--text-main);" id="receipt-payment">Card</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+    
+    <script type="module" src="script.js"></script>
+    
+    <script type="module">
+        import { auth, db } from "./firebase.js";
+        import { collection, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+
+        // Global objects for this specific page
+        window.userOrders = {};
+        window.productsCache = {};
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const container = document.getElementById('orders-container');
+                try {
+                    // 1. Fetch live products from DB directly on this page to prevent loading errors
+                    const pSnap = await getDocs(collection(db, "products"));
+                    pSnap.forEach(doc => {
+                        window.productsCache[doc.id] = doc.data();
+                    });
+
+                    // 2. Fetch User's Orders
+                    const q = query(collection(db, "orders"), where("userId", "==", user.uid), orderBy("createdAt", "desc"));
+                    const querySnapshot = await getDocs(q);
+                    
+                    container.innerHTML = ''; 
+                    
+                    if (querySnapshot.empty) {
+                        container.innerHTML = `<div style="text-align:center; padding:3rem; color:var(--text-muted); font-weight: 600;">You have no orders yet.</div>`;
+                        return;
+                    }
+
+                    querySnapshot.forEach((docSnap) => {
+                        const order = docSnap.data();
+                        const orderId = docSnap.id;
+                        const shortId = orderId.substring(0, 8).toUpperCase();
+                        const date = order.createdAt ? order.createdAt.toDate().toLocaleDateString() : "Just now";
+                        
+                        // Save to global variable for the Modal
+                        window.userOrders[orderId] = order;
+                        
+                        let firstImage = '<div class="img-placeholder" style="width: 3rem; height: 3rem; border-radius: 0.5rem; background: var(--badge-bg); display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 1.25rem;"><i class="ph-bold ph-package"></i></div>';
+                        let descText = `${order.items.length} items`;
+                        
+                        if (order.items.length > 0) {
+                            // Fetch product data from our local cache
+                            const p = window.productsCache[order.items[0].id];
+                            if(p) {
+                                firstImage = `<img src="${p.image}" alt="item" style="width: 3rem; height: 3rem; border-radius: 0.5rem; object-fit: cover; border: 1px solid var(--card-border);">`;
+                                descText = `${p.name} ` + (order.items.length > 1 ? `& ${order.items.length - 1} more items` : '');
+                            }
+                        }
+
+                        let badgeClass = "status-processing"; 
+                        if (order.status === "Shipped") badgeClass = "status-shipped";    
+                        else if (order.status === "Delivered") badgeClass = "status-delivered";  
+                        else if (order.status === "Cancelled") badgeClass = "status-cancelled";  
+
+                        container.innerHTML += `
+                            <div class="list-card checkout-card" style="margin-bottom: 1rem; padding: 1.25rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--card-border);">
+                                    <div>
+                                        <h4 style="font-weight: 800; color: var(--text-main); font-size: 1rem; margin-bottom: 0.25rem;">Order #${shortId}</h4>
+                                        <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 500;">${date}</span>
+                                    </div>
+                                    <span class="status-badge ${badgeClass}">${order.status || 'Processing'}</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                                    <div style="display: flex; align-items: center;">
+                                        ${firstImage}
+                                    </div>
+                                    <span style="font-size: 0.875rem; color: var(--text-main); font-weight: 600;">${descText}</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="font-weight: 800; font-size: 1.125rem; color: var(--text-main);">EGP${(order.totalAmount || 0).toFixed(2)}</span>
+                                    
+                                    <button onclick="openReceipt('${orderId}')" style="padding: 0.5rem 1rem; border: 1px solid var(--primary); color: var(--primary); border-radius: 0.5rem; font-size: 0.75rem; font-weight: 700; background: transparent; cursor: pointer; transition: all 0.2s;">
+                                        View Details
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } catch(err) {
+                    console.error(err);
+                    container.innerHTML = `<div style="text-align:center; padding:3rem; color:#ef4444;">Failed to load orders. Ensure Firebase Indexes are built.</div>`;
+                }
+            }
+        });
+
+        // ==========================================
+        // RECEIPT MODAL LOGIC
+        // ==========================================
+        window.openReceipt = function(orderId) {
+            const order = window.userOrders[orderId];
+            if (!order) return;
+            
+            // 1. Set Header
+            const shortId = orderId.substring(0, 8).toUpperCase();
+            document.getElementById('receipt-order-id').innerText = "Order #" + shortId;
+            document.getElementById('receipt-date').innerText = order.createdAt ? order.createdAt.toDate().toLocaleDateString() : "Just now";
+            
+            // 2. Set Status Badge
+            const statusEl = document.getElementById('receipt-status');
+            statusEl.innerText = order.status || 'Processing';
+            statusEl.className = "status-badge"; // Reset classes
+            if (order.status === "Shipped") statusEl.classList.add("status-shipped");
+            else if (order.status === "Delivered") statusEl.classList.add("status-delivered");
+            else if (order.status === "Cancelled") statusEl.classList.add("status-cancelled");
+            else statusEl.classList.add("status-processing");
+            
+            // 3. Build Items List
+            const itemsContainer = document.getElementById('receipt-items');
+            itemsContainer.innerHTML = '';
+            let calculatedSubtotal = 0;
+            
+            order.items.forEach(item => {
+                // Use the new, safe productsCache
+                const p = window.productsCache[item.id];
+                if (p) {
+                    const itemTotal = p.price * item.qty;
+                    calculatedSubtotal += itemTotal;
+                    itemsContainer.innerHTML += `
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            <img src="${p.image}" onerror="this.src='https://via.placeholder.com/50'" style="width: 3.5rem; height: 3.5rem; border-radius: 0.5rem; object-fit: cover; border: 1px solid var(--card-border);">
+                            <div style="flex: 1;">
+                                <div style="font-weight: 700; color: var(--text-main); font-size: 0.9rem;">${p.name}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">${item.qty} x EGP${p.price.toFixed(2)}</div>
+                            </div>
+                            <div style="font-weight: 700; color: var(--text-main);">EGP${itemTotal.toFixed(2)}</div>
+                        </div>
+                    `;
+                } else {
+                    itemsContainer.innerHTML += `
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 0.9rem; font-weight: 600; color: var(--text-main);">Item ID: ${item.id} (Qty: ${item.qty})</span>
+                        </div>
+                    `;
+                }
+            });
+            
+            // 4. Set Totals
+            document.getElementById('receipt-subtotal').innerText = "EGP" + calculatedSubtotal.toFixed(2);
+            document.getElementById('receipt-total').innerText = "EGP" + (order.totalAmount || 0).toFixed(2);
+            
+            // 5. Set Shipping & Payment details
+            if (order.shippingAddress) {
+                document.getElementById('receipt-address').innerHTML = `
+                    ${order.shippingAddress.name}<br>
+                    ${order.shippingAddress.address}<br>
+                    ${order.shippingAddress.city}, ${order.shippingAddress.zip}
+                `;
+            }
+            document.getElementById('receipt-payment').innerText = order.paymentMethod || 'Cash';
+            
+            // Show the modal
+            document.getElementById('receipt-modal').classList.add('active');
+        }
+        
+        // Close Modal
+        document.getElementById('close-receipt').addEventListener('click', () => {
+            document.getElementById('receipt-modal').classList.remove('active');
+        });
+    </script>
+</body>
+</html>

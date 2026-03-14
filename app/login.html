@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Urban Harvest - Login</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <link rel="stylesheet" href="style.css"/>
+</head>
+<body class="auth-page-body">
+
+    <div class="app-container">
+        <div class="app-header">
+            <a href="start.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+            <h2 class="app-title">Urban Harvest</h2>
+        </div>
+
+        <div class="hero-banner">
+            <div class="hero-img"></div>
+        </div>
+
+        <div class="welcome-text">
+            <h1>Welcome Back</h1>
+            <p>Log in to access your fresh urban harvest</p>
+        </div>
+
+        <form id="login-form" class="auth-form">
+            <div class="input-group">
+                <label class="input-label">Email Address</label>
+                <div class="input-wrapper">
+                    <i class="fa-regular fa-envelope input-icon"></i>
+                    <input type="email" id="login-email" placeholder="your@email.com" required />
+                </div>
+            </div>
+
+            <div class="input-group">
+                <div class="input-label">
+                    <span>Password</span>
+                    <a href="#" class="forgot-link">Forgot Password?</a>
+                </div>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-lock input-icon"></i>
+                    <input type="password" id="login-password" placeholder="••••••••" required />
+                    <!-- <i class="fa-regular fa-eye toggle-pass"></i> -->
+                </div>
+            </div>
+
+            <button type="submit" class="btn-main">
+                <span>Log In</span>
+                <i class="fa-solid fa-arrow-right-to-bracket"></i>
+            </button>
+        </form>
+
+        <div class="separator">
+            <div class="line"></div>
+            <span>OR</span>
+            <div class="line"></div>
+        </div>
+
+        <!-- <div class="social-auth">
+            <button class="social-btn"><i class="fa-brands fa-google" style="color: #DB4437;"></i> Google</button>
+            <button class="social-btn"><i class="fa-brands fa-apple"></i> Apple</button>
+        </div> -->
+
+        <div class="auth-footer">
+            Don't have an account? <a href="signup.html">Sign Up</a>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+    
+    <script type="module" src="auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>All Products - Urban Harvest</title>
+    <script type="module" src="script.js"></script>
+    <script type="module" src="search.js"></script>      
+      <script type="module" src="product-list.js"></script>  
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<div id="global-loader" class="global-loader">
+        <div class="loader-content">
+            <div class="loader-icon">
+                <i class="ph-fill ph-plant"></i>
+            </div>
+            <div class="loader-ring"></div>
+        </div>
+        <p class="loader-text">loading Catalog...</p>
+    </div>
+
+    <header class="header">
+        <div class="container header-top">
+            <!-- <a href="index.html" class="back-btn" style="margin-right: 1rem;">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a> -->
+            <h2 class="page-title" style="text-align: left; flex: 1;">Our Catalog</h2>
+            <button class="cart-btn" onclick="window.location.href='cart.html'">
+                <i class="ri-shopping-basket-line" style="font-size: 1.2rem;"></i>
+                <span class="cart-badge" style="display: none;">0</span>
+            </button>
+        </div>
+
+        <div class="container search-container">
+            <div class="search-bar" style="position: relative;">
+                <i class="fa-solid fa-magnifying-glass text-muted"></i>
+                <input type="text" class="smart-search-input" placeholder="Search for tomatoes, honey..."/>
+                <div class="search-suggestions hidden"></div>
+            </div>
+            
+<div class="filter-scroll" id="category-filters">
+                <div class="chip active" data-category="all" style="cursor: pointer;">All Products</div>
+                <div class="chip" data-category="vegetables" style="cursor: pointer;">Vegetables</div>
+                <div class="chip" data-category="fruits" style="cursor: pointer;">Fruits</div>
+                <div class="chip" data-category="poultry" style="cursor: pointer;">Poultry</div>
+                <div class="chip" data-category="livestock" style="cursor: pointer;">Livestock</div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div id="auth-state" style="display: none;"></div>
+
+        <section>
+            <div class="section-header">
+                <h3 class="section-title" id="list-page-title">All Products</h3>
+            </div>
+            
+            <div class="product-grid" id="all-products-grid">
+                <p style="text-align: center; width: 100%; color: var(--text-muted);">Loading produce...</p>
+            </div>
+        </section>
+    </main>
+
+    <nav class="side-nav" id="sideNav">
+        <a href="index.html" class="nav-item ">
+            <i class="ri-store-2-fill nav-icon" data-inactive="ri-store-2-line" data-active="ri-store-2-fill"></i>
+            <span class="nav-label">Market</span>
+        </a>
+        <a href="product-list.html" class="nav-item active">
+            <i class="ph-fill ph-squares-four nav-icon" data-inactive="ph ph-book-open-text" data-active="ph-fill ph-book-open-text"></i>
+            <span class="nav-label">Products</span>
+        </a>
+        <!-- <a href="cart.html" class="nav-item">
+            <i class="ri-shopping-cart-line nav-icon" data-inactive="ri-shopping-cart-line" data-active="ri-shopping-cart-fill"></i>
+            <span class="nav-label">Cart</span>
+        </a> -->
+                <a href="inbox.html" class="nav-item">
+            <i class="ph ph-tray nav-icon" data-inactive="ph ph-tray" data-active="ph-fill ph-tray"></i>
+            <!-- <i class="ph ph-squares-four nav-icon" data-inactive="ph ph-book-open-text" data-active="ph-fill ph-book-open-text"></i> -->
+            <span class="nav-label">Inbox</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <i class="ri-user-line nav-icon" data-inactive="ri-user-line" data-active="ri-user-fill"></i>
+            <span class="nav-label">Profile</span>
+        </a>
+    </nav>
+
+    <div id="toast-container"></div>
+    <script type="module" src="script.js"></script>
+    <script type="module" src="search.js"></script>      
+      <script type="module" src="product-list.js"></script>  
+</body>
+</html>

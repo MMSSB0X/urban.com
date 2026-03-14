@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Help & Support - Urban Harvest</title>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link rel="stylesheet" href="style.css"/>
+    <style>
+        .faq-item { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 1rem; margin-bottom: 1rem; overflow: hidden; transition: 0.3s; }
+        .faq-header { padding: 1.25rem; display: flex; justify-content: space-between; align-items: center; font-weight: 700; color: var(--text-main); cursor: pointer; }
+        .faq-header i { transition: transform 0.3s ease; color: var(--primary); }
+        .faq-body { padding: 0 1.25rem; max-height: 0; opacity: 0; overflow: hidden; transition: all 0.3s ease; color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; }
+        
+        .faq-item.active { border-color: var(--primary); box-shadow: 0 4px 12px rgba(45, 150, 54, 0.1); }
+        .faq-item.active .faq-header i { transform: rotate(180deg); }
+        .faq-item.active .faq-body { padding: 0 1.25rem 1.25rem; max-height: 200px; opacity: 1; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container header-top">
+            <a href="profile.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+            <h2 class="page-title">Help & Support</h2>
+            <div style="width: 2.5rem;"></div>
+        </div>
+    </header>
+
+    <main class="main-content" style="max-width: 600px; margin: 0 auto;">
+        
+        <div style="background: var(--primary-light); padding: 1.5rem; border-radius: 1rem; display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+            <div style="width: 3rem; height: 3rem; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0;">
+                <i class="ph-bold ph-headset"></i>
+            </div>
+            <div>
+                <h3 style="font-weight: 800; color: var(--primary); margin-bottom: 0.25rem;">How can we help?</h3>
+                <p style="font-size: 0.85rem; color: var(--text-main);">Browse our FAQs below or send us a message.</p>
+            </div>
+        </div>
+
+        <h4 style="font-weight: 800; margin-bottom: 1rem; color: var(--text-main);">Frequently Asked Questions</h4>
+
+        <div class="faq-item">
+            <div class="faq-header" onclick="toggleFaq(this)">
+                <span>How does the delivery code work?</span>
+                <i class="ph-bold ph-caret-down"></i>
+            </div>
+            <div class="faq-body">
+                When your driver arrives, you will receive a 4-digit code in your app Inbox. You must enter this code on the Verification page to officially mark the order as Delivered and secure your package.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-header" onclick="toggleFaq(this)">
+                <span>Where can I track my order?</span>
+                <i class="ph-bold ph-caret-down"></i>
+            </div>
+            <div class="faq-body">
+                You can track all active and past orders by going to your Profile and clicking on the "Orders" tab. The status badge will change color as your order progresses!
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-header" onclick="toggleFaq(this)">
+                <span>What is your return policy?</span>
+                <i class="ph-bold ph-caret-down"></i>
+            </div>
+            <div class="faq-body">
+                Because we deal with fresh produce, we offer a 24-hour freshness guarantee. If any item is damaged or not fresh, please contact support immediately for a replacement or refund.
+            </div>
+        </div>
+
+        <button class="btn-main" onclick="alert('Support chat opening soon!')" style="width: 100%; justify-content: center; height: 3.5rem; margin-top: 2rem; color: white; background: var(--text-main);">
+            <i class="ph-bold ph-chat-circle-dots"></i> Contact Live Support
+        </button>
+
+    </main>
+
+    <script>
+        // Simple JS to toggle the accordions
+        function toggleFaq(element) {
+            const parent = element.parentElement;
+            // Close all others
+            document.querySelectorAll('.faq-item').forEach(item => {
+                if(item !== parent) item.classList.remove('active');
+            });
+            // Toggle clicked one
+            parent.classList.toggle('active');
+        }
+    </script>
+    <script type="module" src="script.js"></script>
+</body>
+</html>

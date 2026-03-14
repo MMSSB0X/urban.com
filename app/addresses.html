@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Addresses - Urban Harvest</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="style.css"/>
+</head>
+<body style="background-color: var(--bg-main);">
+    
+    <header class="header">
+        <div class="container header-top" style="margin-bottom: 0;">
+            <a href="profile.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+            <h2 class="page-title">Shipping Addresses</h2>
+            <div style="width: 2.5rem;"></div> 
+        </div>
+    </header>
+
+    <main class="main-content" style="max-width: 600px;">
+        <button class="add-new-btn" id="open-add-modal">
+            <i class="fa-solid fa-plus"></i> Add New Address
+        </button>
+
+        <div id="addresses-container">
+            <div style="text-align:center; padding: 2rem;"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>
+        </div>
+    </main>
+
+    <div class="modal-overlay" id="address-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">New Address</h3>
+                <button class="close-modal-btn" id="close-modal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <form id="address-form" class="checkout-form-grid">
+                <div class="input-group">
+                    <input type="text" id="addr-label" placeholder="Label (e.g. Home, Office)" required />
+                </div>
+                <div class="input-group">
+                    <input type="text" id="addr-name" placeholder="Receiver Full Name" required />
+                </div>
+                <div class="input-group">
+                    <input type="text" id="addr-street" placeholder="Street Address" required />
+                </div>
+                <div class="input-group half">
+                    <input type="text" id="addr-city" placeholder="City" required />
+                </div>
+                <div class="input-group half">
+                    <input type="text" id="addr-zip" placeholder="Zip Code" required />
+                </div>
+                <button type="submit" class="btn-main" style="grid-column: span 2; margin-top: 1rem;" id="save-address-btn">
+                    Save Address
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="custom-alert-modal">
+        <div class="modal-content" style="max-width: 400px; text-align: center; padding: 2rem 1.5rem;">
+            <div style="width: 4rem; height: 4rem; border-radius: 50%; background: rgba(239, 68, 68, 0.1); color: #ef4444; font-size: 2rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                <i class="fa-solid fa-trash"></i>
+            </div>
+            <h3 class="modal-title" style="margin-bottom: 0.5rem; justify-content: center;">Delete Address?</h3>
+            <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem; line-height: 1.5;">Are you sure you want to permanently delete this address?</p>
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <button class="btn-cancel" id="alert-cancel-btn" style="flex: 1; height: 3rem;">Cancel</button>
+                <button class="btn-danger" id="alert-confirm-btn" style="flex: 1; height: 3rem;">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <script type="module">
+        import { auth, db } from "./firebase.js";
+        import { showToast } from "./toast.js";
+        import { collection, query, where, getDocs, addDoc, deleteDoc, doc, serverTimestamp, orderBy } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+
+        let currentUser = null;
+
+        const addModal = document.getElementById('address-modal');
+        document.getElementById('open-add-modal').addEventListener('click', () => addModal.classList.add('active'));
+        document.getElementById('close-modal').addEventListener('click', () => addModal.classList.remove('active'));
+
+        async function fetchAddresses() {
+            const container = document.getElementById('addresses-container');
+            try {
+                const q = query(collection(db, "addresses"), where("userId", "==", currentUser.uid), orderBy("createdAt", "desc"));
+                const snapshot = await getDocs(q);
+                container.innerHTML = '';
+                
+                if (snapshot.empty) {
+                    container.innerHTML = `<p style="text-align: center; color: var(--text-muted); padding: 2rem;">No addresses found. Add one above!</p>`;
+                    return;
+                }
+
+                snapshot.forEach(docSnap => {
+                    const data = docSnap.data();
+                    const docId = docSnap.id;
+                    
+                    let iconClass = "ri-map-pin-line";
+                    let colorClass = "icon-blue";
+                    const labelLow = data.label.toLowerCase();
+                    if(labelLow.includes('home')) { iconClass = "ri-home-4-line"; colorClass = "icon-orange"; }
+                    if(labelLow.includes('office') || labelLow.includes('work')) { iconClass = "ri-building-4-line"; colorClass = "icon-purple"; }
+
+                    container.innerHTML += `
+                        <div class="list-card address-card" id="card-${docId}">
+                            <div class="address-header">
+                                <div class="address-title">
+                                    <div class="${colorClass} menu-icon" style="width: 2rem; height: 2rem;"><i class="${iconClass}"></i></div>
+                                    <h4>${data.label}</h4>
+                                </div>
+                            </div>
+                            <div class="address-body">
+                                <p style="font-weight:600; color:var(--text-main); margin-bottom:0.25rem;">${data.receiverName}</p>
+                                <p>${data.street}</p>
+                                <p>${data.city}, ${data.zip}</p>
+                            </div>
+                            <div class="card-actions">
+                                <button class="action-btn text-red" onclick="deleteAddress('${docId}')"><i class="fa-solid fa-trash"></i> Delete</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch (error) {
+                container.innerHTML = `<p style="text-align: center; color: #ef4444; padding: 2rem;">Error loading addresses.</p>`;
+            }
+        }
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) { currentUser = user; fetchAddresses(); } 
+            else { window.location.href = "login.html"; }
+        });
+
+        document.getElementById('address-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('save-address-btn');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+            btn.disabled = true;
+
+            const newAddress = {
+                userId: currentUser.uid,
+                label: document.getElementById('addr-label').value,
+                receiverName: document.getElementById('addr-name').value,
+                street: document.getElementById('addr-street').value,
+                city: document.getElementById('addr-city').value,
+                zip: document.getElementById('addr-zip').value,
+                createdAt: serverTimestamp()
+            };
+
+            try {
+                await addDoc(collection(db, "addresses"), newAddress);
+                showToast("Address saved!");
+                document.getElementById('address-form').reset();
+                addModal.classList.remove('active');
+                fetchAddresses();
+            } catch (error) {
+                showToast("Failed to save", "error");
+            } finally {
+                btn.innerHTML = 'Save Address'; btn.disabled = false;
+            }
+        });
+
+        // Global Custom Delete Logic
+        window.deleteAddress = function(id) {
+            const confirmModal = document.getElementById('custom-alert-modal');
+            const confirmBtn = document.getElementById('alert-confirm-btn');
+            const cancelBtn = document.getElementById('alert-cancel-btn');
+
+            cancelBtn.onclick = () => confirmModal.classList.remove('active');
+            
+            confirmBtn.onclick = async () => {
+                confirmBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+                try {
+                    await deleteDoc(doc(db, "addresses", id));
+                    document.getElementById(`card-${id}`).style.display = 'none'; 
+                    showToast("Address deleted");
+                } catch (error) {
+                    showToast("Failed to delete", "error");
+                }
+                confirmModal.classList.remove('active');
+                confirmBtn.innerHTML = 'Delete'; // Reset text
+            };
+            
+            confirmModal.classList.add('active');
+        }
+    </script>
+</body>
+</html>

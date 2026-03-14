@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Inbox - Urban Harvest</title>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="style.css"/>
+    <style>
+        /* Message Card Styles */
+        .msg-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+            animation: fadeIn 0.3s ease forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .msg-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .msg-card.unread {
+            background: var(--input-bg);
+            border-left: 4px solid var(--primary);
+        }
+        .msg-card.unread .msg-title { font-weight: 800; color: var(--text-main); }
+        .msg-card.read .msg-title { font-weight: 600; color: var(--text-muted); }
+        
+        .msg-icon {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        .icon-code { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+        .icon-info { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+        
+        .unread-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--primary);
+            border-radius: 50%;
+            position: absolute;
+            top: 1.25rem;
+            right: 1.25rem;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 1.5rem;
+            width: 100%;
+            max-width: 500px;
+            transform: translateY(20px);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            padding: 1.5rem;
+        }
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="container header-top" style="align-items: center; margin-bottom: 0;">
+            <button onclick="history.back()" class="back-btn">
+            <!-- <a href="profile.html" class="back-btn"> -->
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <h2 class="page-title" style="flex: 1; text-align: center;">Inbox</h2>
+            
+            <button id="mark-all-read" style="background: none; border: none; color: var(--primary); font-weight: 700; font-size: 0.8rem; cursor: pointer; display: none; white-space: nowrap;">
+                <i class="ph-bold ph-checks"></i> Mark Read
+            </button>
+            <div id="header-spacer" style="width: 2.5rem; display: none;"></div>
+        </div>
+    </header>
+
+    <main class="main-content" style="max-width: 600px; margin: 0 auto;" id="inbox-container">
+        <div style="text-align:center; padding: 3rem;">
+            <i class="ph-bold ph-spinner ph-spin text-muted" style="font-size: 2.5rem;"></i>
+        </div>
+    </main>
+
+    <div class="modal-overlay" id="message-modal">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <div id="modal-icon" class="msg-icon"></div>
+                    <div>
+                        <h3 id="modal-sender" style="font-weight: 800; font-size: 1.1rem; margin-bottom: 0.25rem; color: var(--text-main);">Sender Name</h3>
+                        <p id="modal-date" style="font-size: 0.75rem; color: var(--text-muted);">Date & Time</p>
+                    </div>
+                </div>
+                <button id="close-modal" style="background: none; border: none; color: var(--text-grey); font-size: 1.5rem; cursor: pointer; transition: 0.2s;">
+                    <i class="ph-bold ph-x"></i>
+                </button>
+            </div>
+            
+            <div style="background: var(--input-bg); padding: 1.25rem; border-radius: 1rem; border: 1px solid var(--border-color); margin-bottom: 1.25rem;">
+                <p id="modal-text" style="font-size: 0.95rem; line-height: 1.6; color: var(--text-main); margin: 0;"></p>
+            </div>
+            
+            <div id="modal-action-area"></div>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <script type="module" src="script.js"></script>
+    <script type="module">
+        import { auth, db } from "./firebase.js";
+        import { showToast } from "./toast.js";
+        import { collection, query, where, onSnapshot, doc, updateDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+
+        let unreadMessageIds = [];
+        window.userMessages = {}; // Cache messages for the modal
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                const q = query(collection(db, "messages"), where("userId", "==", user.uid));
+                
+                onSnapshot(q, (snap) => {
+                    const container = document.getElementById('inbox-container');
+                    const markAllBtn = document.getElementById('mark-all-read');
+                    const spacer = document.getElementById('header-spacer');
+                    
+                    let messages = [];
+                    unreadMessageIds = [];
+                    window.userMessages = {}; 
+
+                    // EMPTY STATE
+                    if (snap.empty) {
+                        container.innerHTML = `
+                            <div style="text-align:center; padding:4rem 1rem;">
+                                <i class="ph-fill ph-envelope-simple-open" style="font-size: 4rem; color: var(--border-color); margin-bottom: 1rem;"></i>
+                                <h3 style="color: var(--text-main); font-weight: 800; margin-bottom: 0.5rem;">You're all caught up!</h3>
+                                <p style="color:var(--text-muted); font-size: 0.875rem;">No new messages in your inbox.</p>
+                            </div>
+                        `;
+                        if(markAllBtn) markAllBtn.style.display = 'none';
+                        if(spacer) spacer.style.display = 'block';
+                        return;
+                    }
+
+                    // COLLECT DATA
+                    snap.forEach((docSnap) => {
+                        const data = docSnap.data();
+                        const msgObj = { id: docSnap.id, ...data };
+                        messages.push(msgObj);
+                        window.userMessages[docSnap.id] = msgObj; // Save to global object
+                        
+                        if (!data.read) unreadMessageIds.push(docSnap.id);
+                    });
+
+                    // SORT BY NEWEST FIRST
+                    messages.sort((a, b) => {
+                        const timeA = a.createdAt ? a.createdAt.seconds : 0;
+                        const timeB = b.createdAt ? b.createdAt.seconds : 0;
+                        return timeB - timeA; 
+                    });
+
+                    // MANAGE BUTTON VISIBILITY SAFELY
+                    if (markAllBtn && spacer) {
+                        if (unreadMessageIds.length > 0) {
+                            markAllBtn.style.display = 'block';
+                            spacer.style.display = 'none';
+                        } else {
+                            markAllBtn.style.display = 'none';
+                            spacer.style.display = 'block';
+                        }
+                    }
+
+                    // RENDER MESSAGES
+                    container.innerHTML = '';
+                    messages.forEach((msg) => {
+                        const isUnread = !msg.read;
+                        const dateObj = msg.createdAt ? msg.createdAt.toDate() : new Date();
+                        const timeString = dateObj.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                        const dateString = dateObj.toLocaleDateString();
+
+                        const iconClass = msg.type === 'code' ? 'icon-code' : 'icon-info';
+                        const iconType = msg.type === 'code' ? 'ph-shield-check' : 'ph-info';
+                        const statusClass = isUnread ? 'unread' : 'read';
+                        
+                        // Smart order ID resolver
+                        let resolvedOrderId = msg.orderId || '';
+                        if (!resolvedOrderId && msg.content) {
+                            const match = msg.content.match(/Order ID is:\s*([A-Za-z0-9_-]+)/i);
+                            if (match) resolvedOrderId = match[1];
+                        }
+                        
+                        // Action Button directly on card
+                        let actionHtml = '';
+                        if (msg.type === 'code') {
+                            if (msg.verified) {
+                                actionHtml = `<div style="margin-top:0.75rem; color:#10b981; font-size:0.85rem; font-weight:700;"><i class="ph-bold ph-check-circle"></i> Verified Successfully</div>`;
+                            } else {
+                                actionHtml = `<a href="verify.html?orderId=${resolvedOrderId}&msgId=${msg.id}" onclick="event.stopPropagation();" class="btn-main" style="display:inline-block; margin-top:0.75rem; padding:0.4rem 1rem; font-size:0.75rem; width: auto; position: relative; z-index: 2; text-decoration:none;">Verify Order Now</a>`;
+                            }
+                        }
+
+                        // Text truncation for preview
+                        let previewText = msg.content;
+                        if(previewText.length > 60) previewText = previewText.substring(0, 60) + "...";
+
+                        container.innerHTML += `
+                            <div class="msg-card ${statusClass}" onclick="openMessageModal('${msg.id}', '${resolvedOrderId}')">
+                                ${isUnread ? '<div class="unread-dot"></div>' : ''}
+                                <div class="msg-icon ${iconClass}">
+                                    <i class="ph-fill ${iconType}"></i>
+                                </div>
+                                <div style="flex:1; padding-right: 1rem;">
+                                    <div style="display:flex; justify-content:space-between; align-items: center; margin-bottom: 0.25rem;">
+                                        <h4 class="msg-title" style="margin:0; font-size: 0.95rem;">${msg.sender || 'System'}</h4>
+                                        <span style="font-size:0.7rem; color:var(--text-muted);">${dateString}</span>
+                                    </div>
+                                    <p style="font-size:0.85rem; color: ${isUnread ? 'var(--text-main)' : 'var(--text-muted)'}; line-height: 1.5; margin-bottom: 0;">${previewText}</p>
+                                    
+                                    ${actionHtml}
+                                </div>
+                            </div>
+                        `;
+                    });
+                });
+            }
+        });
+
+        // ==========================================
+        // MODAL LOGIC
+        // ==========================================
+        const modal = document.getElementById('message-modal');
+        const closeBtn = document.getElementById('close-modal');
+
+        window.openMessageModal = async (msgId, resolvedOrderId) => {
+            const msg = window.userMessages[msgId];
+            if (!msg) return;
+
+            // 1. Mark as read instantly in database if unread
+            if (!msg.read) {
+                try { await updateDoc(doc(db, "messages", msgId), { read: true }); } catch(e) {}
+            }
+
+            // 2. Populate Modal Data
+            const dateObj = msg.createdAt ? msg.createdAt.toDate() : new Date();
+            document.getElementById('modal-sender').innerText = msg.sender || 'System';
+            document.getElementById('modal-date').innerText = `${dateObj.toLocaleDateString()} at ${dateObj.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+            document.getElementById('modal-text').innerText = msg.content;
+
+            // 3. Set Modal Icon & Color based on type
+            const iconEl = document.getElementById('modal-icon');
+            if(msg.type === 'code') {
+                iconEl.className = 'msg-icon icon-code';
+                iconEl.innerHTML = '<i class="ph-fill ph-shield-check"></i>';
+            } else {
+                iconEl.className = 'msg-icon icon-info';
+                iconEl.innerHTML = '<i class="ph-fill ph-info"></i>';
+            }
+
+            // 4. Inject Action Button inside Modal if needed
+            const actionArea = document.getElementById('modal-action-area');
+            if (msg.type === 'code') {
+                if (msg.verified) {
+                    actionArea.innerHTML = `<div style="text-align:center; padding: 1rem; background: rgba(16,185,129,0.1); border-radius: 0.75rem; color:#10b981; font-weight:700;"><i class="ph-bold ph-check-circle"></i> Verified Successfully</div>`;
+                } else {
+                    actionArea.innerHTML = `<a href="verify.html?orderId=${resolvedOrderId}&msgId=${msg.id}" class="btn-main" style="display: flex; justify-content: center; width: 100%; height: 3.5rem; text-decoration: none; font-size: 1.1rem;">Verify Order Now</a>`;
+                }
+            } else {
+                actionArea.innerHTML = ''; // Clear action area for normal messages
+            }
+
+            // 5. Show Modal
+            modal.classList.add('active');
+        };
+
+        // Close Modal Handlers
+        closeBtn.addEventListener('click', () => modal.classList.remove('active'));
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.classList.remove('active');
+        });
+
+        // ==========================================
+        // MARK ALL READ LOGIC
+        // ==========================================
+        const markAllBtn = document.getElementById('mark-all-read');
+        if (markAllBtn) {
+            markAllBtn.addEventListener('click', async () => {
+                if (unreadMessageIds.length === 0) return;
+                markAllBtn.innerHTML = '<i class="ph-bold ph-spinner ph-spin"></i>';
+                try {
+                    const batch = writeBatch(db);
+                    unreadMessageIds.forEach(id => batch.update(doc(db, "messages", id), { read: true }));
+                    await batch.commit();
+                    showToast("All messages marked as read!", "success");
+                } catch (e) { showToast("Failed to update messages.", "error"); }
+                markAllBtn.innerHTML = '<i class="ph-bold ph-checks"></i> Mark Read';
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Profile - Urban Harvest</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+    <div id="global-loader" class="global-loader">
+        <div class="loader-content">
+            <div class="loader-icon"><i class="ph-fill ph-plant"></i></div>
+            <div class="loader-ring"></div>
+        </div>
+        <p class="loader-text">Harvesting data...</p>
+    </div>
+
+    <!-- <header class="header">
+        <div class="container header-top" style="margin-bottom: 0;">
+            <div style="width: 2.5rem;"></div> 
+            <h2 class="page-title">My Profile</h2>
+            <div style="width: 2.5rem;"></div> 
+        </div>
+
+        
+    </header> -->
+    <header class="header">
+        <div class="container header-top">
+            <div class="logo">
+                <!-- <i class="ph-fill ph-plant" style="font-size: 2rem;"></i> -->
+                <h1>Profile</h1>
+            </div>
+            <button class="cart-btn" onclick="window.location.href='cart.html'">
+                <i class="ri-shopping-basket-line" style="font-size: 1.2rem;"></i>
+                <span class="cart-badge" style="display: none;">0</span>
+            </button>
+        </div>
+
+        <!-- <div class="container search-container">
+<div class="search-bar" style="position: relative;">
+                <i class="fa-solid fa-magnifying-glass text-muted"></i>
+                <input type="text" class="smart-search-input" placeholder="Search local produce..."/>
+                
+                <div class="search-suggestions hidden">
+                    </div>
+            </div> -->
+            <!-- <div class="filter-scroll">
+                <div class="chip active"><i class="ph-fill ph-map-pin" style="font-size: 1rem;"></i> My Neighborhood</div>
+                <div class="chip"><i class="ri-filter-3-line" style="font-size: 1rem;"></i> Filters</div>
+                <div class="chip">Fruits</div>
+                <div class="chip">Honey</div>
+            </div> -->
+        </div>
+    </header>
+    <main class="main-content">
+        
+        <div class="profile-card-centered">
+            <div class="avatar-wrapper">
+                <div class="profile-avatar-large">
+                    <i class="ph-fill ph-user"></i>
+                </div>
+                <button class="edit-avatar-btn" onclick="window.location.href='account.html'"><i class="fa-solid fa-pen"></i></button>
+            </div>
+            <h3 id="profile-name">Loading...</h3>
+            <p id="profile-email">user@email.com</p>
+            <div class="profile-badge">Green Member</div>
+        </div>
+
+        <div class="profile-stats">
+            <div class="stat-box">
+                <span class="stat-value" id="stat-orders">-</span>
+                <span class="stat-label">Orders</span>
+            </div>
+            <div class="divider"></div>
+            <div class="stat-box">
+                <span class="stat-value" id="stat-points">-</span>
+                <span class="stat-label">Points</span>
+            </div>
+        </div>
+
+        <div class="menu-section">
+            <h4 class="menu-section-title">My Account</h4>
+            <div class="profile-menu">
+                <a href="orders.html" class="profile-menu-item"> <div class="menu-icon icon-blue"><i class="ri-shopping-bag-3-line"></i></div>
+                    <span>Orders</span>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+                <a href="addresses.html" class="profile-menu-item"> <div class="menu-icon icon-orange"><i class="ri-map-pin-line"></i></div>
+                    <span>Shipping Addresses</span>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+                
+                <a href="payments.html" class="profile-menu-item"> <div class="menu-icon icon-purple"><i class="ri-bank-card-line"></i></div>
+                    <span>Payment Methods</span>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+            </div>
+        </div>
+<div class="menu-section">
+            <h4 class="menu-section-title">Communications</h4>
+            <div class="profile-menu">
+                <a href="inbox.html" class="profile-menu-item">
+                    <div class="menu-icon icon-red" style="position: relative; overflow: visible;">
+                        <i class="ph-bold ph-envelope"></i>
+                        
+                        <span id="inbox-badge" style="display: none; position: absolute; top: -6px; right: -6px; background: var(--danger); color: black; width: 20px; height: 20px; border-radius: 50%; font-size: 0.65rem; font-weight: 800; align-items: center; justify-content: center; border: 2px solid var(--card-bg); box-shadow: 0 2px 4px rgba(239,68,68,0.3);">0</span>
+                    </div>
+                    
+                    <span>Inbox</span>
+                    <i class="fa-solid fa-chevron-right arrow" style="margin-left: auto;"></i>
+                </a>
+                <!-- <a href="inbox.html" class="profile-menu-item">
+                    <div class="menu-icon icon-red"><i class="ph-bold ph-envelope"></i></div>
+                    <span>Inbox</span>
+                    <span class="badge-new" id="inbox-badge" style="display: none; background: var(--danger); color: white; padding: 2px 8px; border-radius: 10px; font-size: 12px; margin-left: auto; margin-right: 10px;">0</span>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a> -->
+                <a href="verify.html" class="profile-menu-item">
+                    <div class="menu-icon" style="background: rgba(16,185,129,0.1); color: #10b981;"><i class="ph-bold ph-shield-check"></i></div>
+                    <span>Verify Delivery</span>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+            </div>
+        </div>
+        <div class="menu-section">
+            <h4 class="menu-section-title">App Info</h4>
+            <div class="profile-menu">
+                <a href="about.html" class="profile-menu-item">
+                    <div class="menu-icon" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;"><i class="ph-bold ph-info"></i></div>
+                    <span>About Urban Harvest</span>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+                <a href="help.html" class="profile-menu-item">
+                    <div class="menu-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;"><i class="ph-bold ph-question"></i></div>
+                    <span>Help & Support</span>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+            </div>
+        </div>
+        <!-- <button id="logout-btn-full" class="logout-btn-full">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out
+        </button> -->
+        <!-- <div class="menu-section">
+            <h4 class="menu-section-title">Preferences</h4>
+            <div class="profile-menu">
+                <a href="#" class="profile-menu-item">
+                    <div class="menu-icon icon-red"><i class="ri-notification-3-line"></i></div>
+                    <span>Notifications</span>
+                    <span class="badge-new">2 New</span>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
+                </a>
+            </div>
+        </div> -->
+
+        <button id="logout-btn-full" class="logout-btn-full">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out
+        </button>
+
+    </main>
+
+    <nav class="side-nav" id="sideNav">
+        <a href="index.html" class="nav-item">
+            <i class="ri-store-2-line nav-icon" data-inactive="ri-store-2-line" data-active="ri-store-2-fill"></i>
+            <span class="nav-label">Market</span>
+        </a>
+        <a href="product-list.html" class="nav-item">
+            <i class="ph ph-squares-four nav-icon" data-inactive="ph ph-book-open-text" data-active="ph-fill ph-book-open-text"></i>
+            <span class="nav-label">Products</span>
+        </a>
+        <!-- <a href="cart.html" class="nav-item">
+            <i class="ri-shopping-cart-line nav-icon" data-inactive="ri-shopping-cart-line" data-active="ri-shopping-cart-fill"></i>
+            <span class="nav-label">Cart</span>
+        </a> -->
+                <a href="inbox.html" class="nav-item">
+            <i class="ph ph-tray nav-icon" data-inactive="ph ph-tray" data-active="ph-fill ph-tray"></i>
+            <!-- <i class="ph ph-squares-four nav-icon" data-inactive="ph ph-book-open-text" data-active="ph-fill ph-book-open-text"></i> -->
+            <span class="nav-label">Inbox</span>
+        </a>
+        <a href="#" class="nav-item active">
+            <i class="ri-user-fill nav-icon" data-inactive="ri-user-line" data-active="ri-user-fill"></i>
+            <span class="nav-label">Profile</span>
+        </a>
+    </nav>
+
+    <script type="module" src="script.js"></script>
+
+    <!-- <script type="module">
+        import { auth, db } from "./firebase.js";
+        import { getDoc, doc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                // 1. Fetch User Profile Info
+                let displayName = user.displayName;
+                if (!displayName) {
+                    try {
+                        const userDoc = await getDoc(doc(db, "users", user.uid));
+                        if (userDoc.exists()) displayName = userDoc.data().fullName;
+                    } catch (err) { console.log(err); }
+                }
+                
+                document.getElementById('profile-name').innerText = displayName || "Urban Farmer";
+                document.getElementById('profile-email').innerText = user.email;
+
+                // 2. Fetch User Stats (Orders & Points)
+                try {
+                    const q = query(collection(db, "orders"), where("userId", "==", user.uid));
+                    const orderSnaps = await getDocs(q);
+                    
+                    let totalSpent = 0;
+                    orderSnaps.forEach(doc => {
+                        totalSpent += (doc.data().totalAmount || 0);
+                    });
+
+                    // Update DOM (e.g. 10 points for every $1 spent)
+                    document.getElementById('stat-orders').innerText = orderSnaps.size;
+                    document.getElementById('stat-points').innerText = Math.floor(totalSpent * 10);
+                    
+                } catch(error) {
+                    console.log("Error loading stats:", error);
+                    document.getElementById('stat-orders').innerText = "0";
+                    document.getElementById('stat-points').innerText = "0";
+                }
+                
+            } else {
+                window.location.href = "login.html";
+            }
+        });
+
+        // Trigger Logout
+        document.getElementById('logout-btn-full').addEventListener('click', () => {
+            signOut(auth).then(() => window.location.replace("start.html"));
+        });
+    </script> -->
+<script type="module">
+        import { auth, db } from "./firebase.js";
+        // I ADDED onSnapshot TO THE IMPORT LIST BELOW!
+        import { getDoc, doc, collection, query, where, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+
+        onAuthStateChanged(auth, async (user) => {
+            const loader = document.getElementById('global-loader');
+
+            if (user) {
+                // 1. Fetch User Profile Info
+                let displayName = user.displayName;
+                try {
+                    const userDoc = await getDoc(doc(db, "users", user.uid));
+                    if (userDoc.exists() && userDoc.data().fullName) {
+                        displayName = userDoc.data().fullName;
+                    }
+                } catch (err) { console.log(err); }
+                
+                document.getElementById('profile-name').innerText = displayName || "Urban Farmer";
+                document.getElementById('profile-email').innerText = user.email;
+
+// 2. Fetch unread messages count (Inbox Bubble)
+                try {
+                    const messagesQuery = query(collection(db, "messages"), where("userId", "==", user.uid), where("read", "==", false));
+                    onSnapshot(messagesQuery, (snap) => {
+                        const badge = document.getElementById('inbox-badge');
+                        if(snap.size > 0) {
+                            // Use 'flex' to perfectly center the number in the circle
+                            badge.style.display = 'flex';
+                            
+                            // If they have more than 9 messages, show "9+" so the circle doesn't stretch
+                            badge.innerText = snap.size > 9 ? '9+' : snap.size;
+                        } else {
+                            badge.style.display = 'none';
+                        }
+                    });
+                } catch(e) { console.log("Badge error:", e); }
+
+                // 3. Fetch User Stats (Orders & Points)
+                try {
+                    const q = query(collection(db, "orders"), where("userId", "==", user.uid));
+                    const orderSnaps = await getDocs(q);
+                    
+                    let totalSpent = 0;
+                    orderSnaps.forEach(orderDoc => {
+                        totalSpent += (orderDoc.data().totalAmount || 0);
+                    });
+
+                    document.getElementById('stat-orders').innerText = orderSnaps.size;
+                    document.getElementById('stat-points').innerText = Math.floor(totalSpent * 10);
+                    
+                } catch(error) {
+                    console.log("Error loading stats:", error);
+                    document.getElementById('stat-orders').innerText = "0";
+                    document.getElementById('stat-points').innerText = "0";
+                }
+                
+                // 4. HIDE LOADER WHEN DONE!
+                if(loader) loader.classList.add('hidden');
+
+            } else {
+                window.location.href = "login.html";
+            }
+        });
+
+        // Trigger Logout
+        document.getElementById('logout-btn-full').addEventListener('click', () => {
+            signOut(auth).then(() => window.location.replace("start.html"));
+        });
+    </script>
+</body>
+</html>

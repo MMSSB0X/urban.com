@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Product - Urban Harvest</title>
+        <script type="module" src="script.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div id="global-loader" class="global-loader">
+        <div class="loader-content">
+            <div class="loader-icon">
+                <i class="ph-fill ph-plant"></i>
+            </div>
+            <div class="loader-ring"></div>
+        </div>
+        <p class="loader-text">Harvesting data...</p>
+    </div>
+    <header class="product-header">
+        <a href="index.html" class="icon-btn back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+        <!-- <button class="icon-btn fav-btn"><i class="fa-regular fa-heart"></i></button> -->
+    </header>
+
+    <main class="product-main">
+        <div class="product-gallery">
+            <img id="mainImage" src="" alt="Loading..." class="main-image"/>
+            <div class="thumbnail-list" id="thumbnail-list">
+                </div>
+        </div>
+
+        <div class="product-details-content">
+            <div class="product-meta">
+                <span class="farm-name"><i class="ph-fill ph-plant"></i> <span id="prod-farm">Loading...</span></span>
+                <span class="product-badge" id="prod-badge"></span>
+            </div>
+            
+            <h1 class="product-title-large" id="prod-title">Loading Product...</h1>
+            <p class="product-unit" id="prod-unit"></p>
+
+            <div class="product-price-row">
+                <span class="product-price-large" id="prod-price"></span>
+                <div class="qty-control large">
+                    <button class="qty-btn" id="btnMinus"><i class="ph-bold ph-minus"></i></button>
+                    <input type="number" id="qtyInput" value="1" min="1" readonly class="qty-num-input" />
+                    <button class="qty-btn add" id="btnPlus"><i class="ph-bold ph-plus"></i></button>
+                </div>
+            </div>
+
+            <div class="product-tabs">
+                <div class="tab-headers">
+                    <button class="tab-btn active" data-target="desc">Description</button>
+                    <button class="tab-btn" data-target="nutri">Nutrition</button>
+                    <button class="tab-btn" data-target="farm">The Farm</button>
+                </div>
+                <div class="tab-content active" id="desc"><p></p></div>
+                <div class="tab-content" id="nutri"><p></p></div>
+                <div class="tab-content" id="farm"><p></p></div>
+            </div>
+            
+            <button class="checkout-btn sticky-add-btn" id="add-to-cart-btn">
+                <i class="ri-shopping-cart-2-line"></i> Add to Cart
+            </button>
+        </div>
+    </main>
+
+    <nav class="side-nav" id="sideNav">
+        <a href="index.html" class="nav-item">
+            <i class="ri-store-2-line nav-icon" data-inactive="ri-store-2-line" data-active="ri-store-2-fill"></i>
+            <span class="nav-label">Market</span>
+        </a>
+        <a href="product-list.html" class="nav-item">
+            <i class="ph ph-squares-four nav-icon" data-inactive="ph ph-book-open-text" data-active="ph-fill ph-book-open-text"></i>
+            <span class="nav-label">Products</span>
+        </a>
+                <a href="inbox.html" class="nav-item">
+            <i class="ph ph-tray nav-icon" data-inactive="ph ph-tray" data-active="ph-fill ph-tray"></i>
+            <!-- <i class="ph ph-squares-four nav-icon" data-inactive="ph ph-book-open-text" data-active="ph-fill ph-book-open-text"></i> -->
+            <span class="nav-label">Inbox</span>
+        </a>
+        <!-- <a href="cart.html" class="nav-item">
+            <i class="ri-shopping-cart-line nav-icon" data-inactive="ri-shopping-cart-line" data-active="ri-shopping-cart-fill"></i>
+            <span class="nav-label">Cart</span>
+        </a> -->
+        <a href="profile.html" class="nav-item">
+            <i class="ri-user-line nav-icon" data-inactive="ri-user-line" data-active="ri-user-fill"></i>
+            <span class="nav-label">Profile</span>
+        </a>
+    </nav>
+
+    <div id="toast-container"></div>
+    <script type="module" src="script.js"></script>
+</body>
+</html>

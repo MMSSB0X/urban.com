@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Checkout - Urban Harvest</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="style.css"/>
+</head>
+<body style="background-color: var(--bg-main);">
+
+    <header class="header">
+        <div class="container header-top" style="margin-bottom: 0;">
+            <a href="cart.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+            <h2 class="page-title">Checkout</h2>
+            <div style="width: 2.5rem;"></div> 
+        </div>
+    </header>
+
+    <main class="main-content">
+        <form id="checkout-form" class="cart-layout">
+            
+            <div class="cart-items-section">
+                <div class="checkout-card">
+                    <h3 class="checkout-title"><i class="ri-map-pin-line"></i> Shipping Address</h3>
+                    
+                    <div style="margin-bottom: 1rem; position: relative;">
+                        <select id="saved-address-select" style="width: 100%; height: 3.5rem; border-radius: 0.75rem; border: 1px solid var(--card-border); background-color: var(--input-bg); padding: 0 1rem; font-size: 0.875rem; color: var(--text-main); outline: none; cursor: pointer; font-family: inherit; font-weight: 600;">
+                            <option value="new">✨ Enter New Custom Address</option>
+                        </select>
+                    </div>
+
+                    <div class="checkout-form-grid" id="address-form-grid">
+                        <div class="input-group">
+                            <input type="text" id="chk-name" placeholder="Full Name" required />
+                        </div>
+                        <div class="input-group">
+                            <input type="text" id="chk-address" placeholder="Street Address" required />
+                        </div>
+                        <div class="input-group half">
+                            <input type="text" id="chk-city" placeholder="City" required />
+                        </div>
+                        <div class="input-group half">
+                            <input type="text" id="chk-zip" placeholder="Zip Code" required />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checkout-card">
+                    <h3 class="checkout-title"><i class="ri-bank-card-line"></i> Payment Method</h3>
+                    <div class="payment-methods">
+                        <label class="payment-option ">
+                            <input type="radio" name="payment" value="Card" >
+                        <!-- <label class="payment-option active">
+                            <input type="radio" name="payment" value="Card" checked> -->
+                            <i class="fa-regular fa-credit-card"></i> Card
+                        </label>
+                        <label class="payment-option">
+                            <input type="radio" name="payment" value="Cash">
+                            <i class="fa-solid fa-money-bill"></i> Cash
+                        </label>
+                    </div>
+                    
+                    <div id="card-selection-wrapper" style="margin-top: 1rem;">
+                        
+                        <div style="margin-bottom: 1rem; position: relative;">
+                            <select id="saved-payment-select" style="width: 100%; height: 3.5rem; border-radius: 0.75rem; border: 1px solid var(--card-border); background-color: var(--input-bg); padding: 0 1rem; font-size: 0.875rem; color: var(--text-main); outline: none; cursor: pointer; font-family: inherit; font-weight: 600;">
+                                <option value="new">✨ Enter New Payment Method</option>
+                            </select>
+                        </div>
+
+                        <div class="checkout-form-grid" id="card-details-section">
+                            <div class="input-group" style="grid-column: span 2;">
+                                <input type="text" id="chk-card-name" placeholder="Cardholder Name" required />
+                            </div>
+                            <div class="input-group" style="grid-column: span 2;">
+                                <input type="text" id="chk-card" placeholder="Card Number (e.g. 4242...)" required />
+                            </div>
+                            <div class="input-group half">
+                                <input type="text" id="chk-exp" placeholder="MM/YY" required />
+                            </div>
+                            <div class="input-group half">
+                                <input type="password" id="chk-cvc" placeholder="CVC" required maxlength="3"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cart-summary-section">
+                <h3 class="checkout-title" style="margin-bottom: 1rem;">Order Summary</h3>
+                <div class="summary-row">
+                    <span id="summary-items-count">Items (0)</span>
+                    <span class="font-medium" id="summary-subtotal">---</span>
+                </div>
+                <div class="summary-row">
+                    <span>Delivery</span>
+                    <span class="text-primary font-medium">FREE</span>
+                </div>
+                <div class="summary-row">
+                    <span>Tax (14%)</span>
+                    <span class="font-medium" id="summary-tax">---</span>
+                </div>
+                <div class="summary-total">
+                    <span>Total</span>
+                    <span id="summary-total">---</span>
+                </div>
+                <button type="submit" class="checkout-btn" id="place-order-btn">
+                    Place Order
+                    <i class="fa-solid fa-lock"></i>
+                </button>
+            </div>
+            
+        </form>
+    </main>
+
+    <div id="toast-container"></div>
+
+    <script type="module">
+        import { auth, db } from "./firebase.js";
+        import { products, getProductById } from "./products.js";
+        import { showToast } from "./toast.js";
+        import { doc, getDoc, setDoc, collection, addDoc, serverTimestamp, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+
+        let currentUser = null;
+        let cartItemsData = [];
+        let finalTotal = 0;
+        
+        let savedAddresses = {};
+        let savedPayments = {};
+        let defaultUserName = '';
+
+        // 1. Radio Button Toggle (Card vs Cash)
+        document.querySelectorAll('input[name="payment"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                const cardWrapper = document.getElementById('card-selection-wrapper');
+                const inputs = cardWrapper.querySelectorAll('input');
+                if(e.target.value === 'Cash') {
+                    cardWrapper.style.display = 'none';
+                    inputs.forEach(i => i.removeAttribute('required'));
+                } else {
+                    cardWrapper.style.display = 'block';
+                    inputs.forEach(i => i.setAttribute('required', 'true'));
+                }
+            });
+        });
+
+        // 2. Fetch Data on Auth Load
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                
+                // A. Fetch User Data
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                if (userDoc.exists()) {
+                    defaultUserName = userDoc.data().fullName || '';
+                    document.getElementById('chk-name').value = defaultUserName;
+                    document.getElementById('chk-card-name').value = defaultUserName;
+                }
+
+                // B. Fetch Saved Addresses
+                const qAddr = query(collection(db, "addresses"), where("userId", "==", user.uid));
+                const addrSnapshot = await getDocs(qAddr);
+                const addrSelect = document.getElementById('saved-address-select');
+                let hasDefaultAddr = false;
+
+                if (!addrSnapshot.empty) {
+                    addrSnapshot.forEach(docSnap => {
+                        const data = docSnap.data();
+                        savedAddresses[docSnap.id] = data;
+                        
+                        const option = document.createElement('option');
+                        option.value = docSnap.id;
+                        option.text = `📍 ${data.label} - ${data.street}, ${data.city}`;
+                        if (data.isDefault) { option.selected = true; hasDefaultAddr = true; }
+                        addrSelect.appendChild(option);
+                    });
+                    if (hasDefaultAddr) addrSelect.dispatchEvent(new Event('change'));
+                }
+
+                // C. Fetch Saved Payments
+                const qPay = query(collection(db, "payments"), where("userId", "==", user.uid));
+                const paySnapshot = await getDocs(qPay);
+                const paySelect = document.getElementById('saved-payment-select');
+                let hasDefaultPay = false;
+
+                if (!paySnapshot.empty) {
+                    paySnapshot.forEach(docSnap => {
+                        const data = docSnap.data();
+                        savedPayments[docSnap.id] = data;
+                        
+                        let brandName = "Card";
+                        if (data.cardNumber.startsWith('4')) brandName = "Visa";
+                        else if (data.cardNumber.startsWith('5')) brandName = "Mastercard";
+                        
+                        const last4 = data.cardNumber.slice(-4) || "****";
+                        
+                        const option = document.createElement('option');
+                        option.value = docSnap.id;
+                        option.text = `💳 ${brandName} ending in ${last4}`;
+                        if (data.isDefault) { option.selected = true; hasDefaultPay = true; }
+                        paySelect.appendChild(option);
+                    });
+                    if (hasDefaultPay) paySelect.dispatchEvent(new Event('change'));
+                }
+
+                // D. Fetch Cart Totals
+                const cartDoc = await getDoc(doc(db, "carts", user.uid));
+                if (cartDoc.exists() && cartDoc.data().items.length > 0) {
+                    cartItemsData = cartDoc.data().items;
+                    let subtotal = 0; let totalQty = 0;
+
+                    cartItemsData.forEach(cartItem => {
+                        const pInfo = getProductById(cartItem.id);
+                        if (pInfo) {
+                            subtotal += (pInfo.price * cartItem.qty);
+                            totalQty += cartItem.qty;
+                        }
+                    });
+
+                    const tax = subtotal * 0.14;
+                    finalTotal = subtotal + tax;
+
+                    document.getElementById('summary-items-count').innerText = `Items (${totalQty})`;
+                    document.getElementById('summary-subtotal').innerText = `EGP${subtotal.toFixed(2)}`;
+                    document.getElementById('summary-tax').innerText = `EGP${tax.toFixed(2)}`;
+                    document.getElementById('summary-total').innerText = `EGP${finalTotal.toFixed(2)}`;
+                } else {
+                    showToast("Your cart is empty!", "error");
+                    setTimeout(() => window.location.href = "cart.html", 1500);
+                }
+            } else {
+                window.location.href = "login.html";
+            }
+        });
+
+        // 3. Handle Address Dropdown
+        document.getElementById('saved-address-select').addEventListener('change', (e) => {
+            const val = e.target.value;
+            if (val === 'new') {
+                document.getElementById('chk-name').value = defaultUserName; 
+                document.getElementById('chk-address').value = '';
+                document.getElementById('chk-city').value = '';
+                document.getElementById('chk-zip').value = '';
+            } else {
+                const data = savedAddresses[val];
+                document.getElementById('chk-name').value = data.receiverName || '';
+                document.getElementById('chk-address').value = data.street || '';
+                document.getElementById('chk-city').value = data.city || '';
+                document.getElementById('chk-zip').value = data.zip || '';
+            }
+        });
+
+        // 4. Handle Payment Dropdown
+        document.getElementById('saved-payment-select').addEventListener('change', (e) => {
+            const val = e.target.value;
+            if (val === 'new') {
+                document.getElementById('chk-card-name').value = defaultUserName; 
+                document.getElementById('chk-card').value = '';
+                document.getElementById('chk-exp').value = '';
+                document.getElementById('chk-cvc').value = '';
+            } else {
+                const data = savedPayments[val];
+                document.getElementById('chk-card-name').value = data.cardholderName || defaultUserName;
+                document.getElementById('chk-card').value = data.cardNumber || '';
+                document.getElementById('chk-exp').value = data.expiryDate || '';
+                // document.getElementById('chk-cvc').value = '***'; // Dummy CVC for saved card
+            }
+        });
+
+        // 5. Submit Order
+        document.getElementById('checkout-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('place-order-btn');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+            btn.disabled = true;
+
+            const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
+            let maskedCard = "Cash";
+            if (paymentMethod === "Card") {
+                const cardNum = document.getElementById('chk-card').value;
+                maskedCard = "Card ending in " + cardNum.slice(-4);
+            }
+
+            try {
+                // Save Order
+                const orderData = {
+                    userId: currentUser.uid,
+                    items: cartItemsData,
+                    totalAmount: finalTotal,
+                    paymentMethod: maskedCard,
+                    status: "Processing",
+                    shippingAddress: {
+                        name: document.getElementById('chk-name').value,
+                        address: document.getElementById('chk-address').value,
+                        city: document.getElementById('chk-city').value,
+                        zip: document.getElementById('chk-zip').value
+                    },
+                    createdAt: serverTimestamp()
+                };
+
+                const orderRef = await addDoc(collection(db, "orders"), orderData);
+
+                // Empty Cart
+                await setDoc(doc(db, "carts", currentUser.uid), { items: [] });
+
+                // Redirect
+                window.location.replace(`order-success.html?id=${orderRef.id}`);
+
+            } catch (error) {
+                console.error(error);
+                showToast("Payment failed. Please try again.", "error");
+                btn.innerHTML = 'Place Order <i class="fa-solid fa-lock"></i>';
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

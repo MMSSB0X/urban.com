@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>Welcome Tour - Urban Harvest</title>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="style.css"/>
+    <style>
+        body { overflow: hidden; background: var(--bg-color); }
+        .tour-container { position: relative; width: 100vw; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        
+        .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; text-align: center; opacity: 0; transform: translateX(50px); transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1); visibility: hidden; }
+        .slide.active { opacity: 1; transform: translateX(0); visibility: visible; z-index: 10; }
+        .slide.exit { opacity: 0; transform: translateX(-50px); visibility: hidden; }
+
+        .slide-icon { font-size: 6rem; margin-bottom: 2rem; display: flex; align-items: center; justify-content: center; width: 12rem; height: 12rem; border-radius: 50%; }
+        .slide-title { font-size: 1.75rem; font-weight: 800; color: var(--text-main); margin-bottom: 1rem; }
+        .slide-desc { font-size: 1rem; color: var(--text-muted); line-height: 1.6; max-width: 400px; }
+
+        .tour-controls { position: absolute; bottom: 3rem; width: 100%; padding: 0 2rem; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; z-index: 20; max-width: 500px; left: 50%; transform: translateX(-50%); }
+        
+        .dots { display: flex; gap: 0.5rem; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border-color); transition: 0.3s; }
+        .dot.active { background: var(--primary); width: 24px; border-radius: 10px; }
+
+        .btn-tour { background: var(--primary); color: white; border: none; padding: 1rem; width: 100%; border-radius: 1rem; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .btn-skip { background: transparent; color: var(--text-muted); border: none; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div class="tour-container">
+        <div class="slide active" id="slide-0">
+            <div class="slide-icon" style="background: rgba(45, 150, 54, 0.1); color: var(--primary);">
+                <i class="ph-fill ph-plant"></i>
+            </div>
+            <h2 class="slide-title">Fresh Local Produce</h2>
+            <p class="slide-desc">Discover the freshest organic vegetables, fruits, and dairy sourced directly from local neighborhood farms.</p>
+        </div>
+
+        <div class="slide" id="slide-1">
+            <div class="slide-icon" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;">
+                <i class="ph-fill ph-shopping-cart"></i>
+            </div>
+            <h2 class="slide-title">Easy Ordering</h2>
+            <p class="slide-desc">Add items to your basket, checkout seamlessly, and track your order status live right from your profile.</p>
+        </div>
+
+        <div class="slide" id="slide-2">
+            <div class="slide-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+                <i class="ph-fill ph-shield-check"></i>
+            </div>
+            <h2 class="slide-title">Secure Delivery</h2>
+            <p class="slide-desc">Receive a 4-digit OTP code in your Inbox. Give it to the driver to securely verify and complete your delivery!</p>
+        </div>
+
+        <div class="tour-controls">
+            <div class="dots">
+                <div class="dot active" id="dot-0"></div>
+                <div class="dot" id="dot-1"></div>
+                <div class="dot" id="dot-2"></div>
+            </div>
+            <button class="btn-tour" id="next-btn">Next</button>
+            <button class="btn-skip" id="skip-btn">Skip Tour</button>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 0;
+        const totalSteps = 3;
+        const nextBtn = document.getElementById('next-btn');
+        const skipBtn = document.getElementById('skip-btn');
+
+        function updateSlider() {
+            // Update Slides
+            for (let i = 0; i < totalSteps; i++) {
+                const slide = document.getElementById(`slide-${i}`);
+                const dot = document.getElementById(`dot-${i}`);
+                
+                if (i === currentStep) {
+                    slide.className = 'slide active';
+                    dot.className = 'dot active';
+                } else if (i < currentStep) {
+                    slide.className = 'slide exit';
+                    dot.className = 'dot';
+                } else {
+                    slide.className = 'slide';
+                    dot.className = 'dot';
+                }
+            }
+
+            // Update Button Text
+            if (currentStep === totalSteps - 1) {
+                nextBtn.innerText = "Get Started";
+                skipBtn.style.opacity = '0';
+                skipBtn.style.pointerEvents = 'none';
+            } else {
+                nextBtn.innerText = "Next";
+                skipBtn.style.opacity = '1';
+                skipBtn.style.pointerEvents = 'auto';
+            }
+        }
+
+        nextBtn.addEventListener('click', () => {
+            if (currentStep < totalSteps - 1) {
+                currentStep++;
+                updateSlider();
+            } else {
+                // Finish Tour -> Go to Index
+                window.location.replace('tour-demo.html');
+            }
+        });
+
+        skipBtn.addEventListener('click', () => {
+            window.location.replace('index.html');
+        });
+    </script>
+</body>
+</html>

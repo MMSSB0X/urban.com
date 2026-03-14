@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Interactive Tour - Urban Harvest</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="style.css"/>
+    <style>
+        /* Block clicking on the fake background */
+        body { pointer-events: none; overflow-x: hidden; }
+
+        /* === MAGIC SPOTLIGHT OVERLAY === */
+        .tour-spotlight {
+            position: fixed;
+            z-index: 9000;
+            border-radius: 1rem;
+            box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.8); /* Giant shadow creates the dark background */
+            border: 2px solid var(--primary);
+            pointer-events: none;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 0;
+            visibility: hidden;
+        }
+        .tour-spotlight.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* === FLOATING DIALOG === */
+        .tour-dialog {
+            position: fixed;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 400px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            z-index: 9002;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: auto; /* Allow clicking the tour buttons */
+        }
+        .tour-dialog.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .tour-step-counter { font-size: 0.75rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; display: block; }
+        .tour-title { font-size: 1.25rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.5rem; }
+        .tour-text { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1.5rem; }
+        .tour-buttons { display: flex; gap: 1rem; }
+        .btn-tour-next { flex: 1; background: var(--primary); color: white; border: none; padding: 0.75rem; border-radius: 0.75rem; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .btn-tour-skip { flex: 1; background: var(--input-bg); color: var(--text-muted); border: none; padding: 0.75rem; border-radius: 0.75rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="container header-top">
+            <div class="logo">
+                <i class="ph-fill ph-plant" style="font-size: 2rem;"></i>
+                <h1>URBAN</h1>
+            </div>
+            <button class="cart-btn" id="tour-target-3">
+                <i class="ri-shopping-basket-line" style="font-size: 1.2rem;"></i>
+                <span class="cart-badge" style="display: flex;">2</span>
+            </button>
+        </div>
+
+        <div class="container search-container">
+            <div class="search-bar" id="tour-target-1" style="position: relative;">
+                <i class="fa-solid fa-magnifying-glass text-muted"></i>
+                <input type="text" class="smart-search-input" placeholder="Search local produce..." disabled/>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <section class="hero">
+            <div class="hero-bg" style="background-color: var(--primary-light);"></div>
+            <div class="hero-content">
+                <span class="hero-tag">Seasonal Selection</span>
+                <h2 class="hero-title">Fresh from the Garden</h2>
+                <p class="hero-desc">Picked today, delivered within hours to your doorstep.</p>
+            </div>
+        </section>
+
+        <section>
+            <div class="section-header">
+                <h3 class="section-title">New Arrivals</h3>
+            </div>
+            
+            <div class="product-grid">
+                <div class="product-card" style="display:flex;">
+                    <div class="product-img-wrapper" style="background: #fee2e2; display: flex; align-items: center; justify-content: center; font-size: 3rem;">
+                        🍅
+                    </div>
+                    <div class="product-info">
+                        <span class="farm-name">Green Farm</span>
+                        <h4 class="product-title">Organic Tomatoes</h4>
+                        <span class="product-weight">1 kg</span>
+                        <div class="product-bottom">
+                            <span class="product-price">$4.99</span>
+                            <button class="add-btn" id="tour-target-2"><i class="ph-bold ph-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card" style="display:flex;">
+                    <div class="product-img-wrapper" style="background: #fef3c7; display: flex; align-items: center; justify-content: center; font-size: 3rem;">
+                        🍯
+                    </div>
+                    <div class="product-info">
+                        <span class="farm-name">Sweet Valley</span>
+                        <h4 class="product-title">Raw Honey</h4>
+                        <span class="product-weight">500g</span>
+                        <div class="product-bottom">
+                            <span class="product-price">$8.50</span>
+                            <button class="add-btn"><i class="ph-bold ph-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <nav class="side-nav" id="sideNav">
+        <a href="#" class="nav-item active">
+            <i class="ri-store-2-fill nav-icon"></i>
+            <span class="nav-label">Market</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="ph ph-squares-four nav-icon"></i>
+            <span class="nav-label">Products</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="ph ph-tray nav-icon"></i>
+            <span class="nav-label">Inbox</span>
+        </a>
+        <a href="#" class="nav-item" id="tour-target-4">
+            <i class="ri-user-line nav-icon"></i>
+            <span class="nav-label">Profile</span>
+        </a>
+    </nav>
+
+
+    <div class="tour-spotlight" id="tour-spotlight"></div>
+
+    <div class="tour-dialog" id="tour-dialog">
+        <span class="tour-step-counter" id="tour-counter">Step 1 of 4</span>
+        <h3 class="tour-title" id="tour-title">Smart Search</h3>
+        <p class="tour-text" id="tour-text">Find exactly what you are looking for. Type any fruit, vegetable, or farm name here.</p>
+        
+        <div class="tour-buttons">
+            <button class="btn-tour-skip" onclick="endTour()">Skip</button>
+            <button class="btn-tour-next" id="next-btn" onclick="nextStep()">Next</button>
+        </div>
+    </div>
+
+    <script>
+        const tourSteps = [
+            { id: 'tour-target-1', title: 'Smart Search', text: 'Find exactly what you are looking for. Type any product category or farm name here.' },
+            { id: 'tour-target-2', title: 'One-Tap Add', text: 'Tap the plus button to instantly add fresh local produce straight into your basket.' },
+            { id: 'tour-target-3', title: 'Your Cart', text: 'Review your items and proceed to a secure checkout from here.' },
+            { id: 'tour-target-4', title: 'Track & Verify', text: 'Access your Profile to track your order live, check your Inbox, and verify your delivery code.' }
+        ];
+
+        let currentStep = 0;
+        const spotlight = document.getElementById('tour-spotlight');
+        const dialog = document.getElementById('tour-dialog');
+
+        function updateSpotlight() {
+            const targetEl = document.getElementById(tourSteps[currentStep].id);
+            if (!targetEl) return;
+
+            // Scroll to the element smoothly so it is always on screen!
+            targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            // Wait a tiny bit for the scroll to finish, then draw the spotlight
+            setTimeout(() => {
+                const rect = targetEl.getBoundingClientRect();
+                const padding = 8; 
+
+                spotlight.style.top = `${rect.top - padding}px`;
+                spotlight.style.left = `${rect.left - padding}px`;
+                spotlight.style.width = `${rect.width + (padding * 2)}px`;
+                spotlight.style.height = `${rect.height + (padding * 2)}px`;
+
+                // Intelligently place Dialog box out of the way
+                if (rect.top > window.innerHeight / 2) {
+                    dialog.style.top = '10%';
+                    dialog.style.bottom = 'auto';
+                } else {
+                    dialog.style.top = 'auto';
+                    dialog.style.bottom = '10%';
+                }
+            }, 300); // 300ms wait allows the scroll animation to finish
+        }
+
+        function showStep(index) {
+            const step = tourSteps[index];
+
+            document.getElementById('tour-counter').innerText = `Step ${index + 1} of ${tourSteps.length}`;
+            document.getElementById('tour-title').innerText = step.title;
+            document.getElementById('tour-text').innerText = step.text;
+
+            const nextBtn = document.getElementById('next-btn');
+            if (index === tourSteps.length - 1) {
+                nextBtn.innerText = "Start Shopping";
+                nextBtn.style.background = "#10b981";
+            } else {
+                nextBtn.innerText = "Next";
+                nextBtn.style.background = "var(--primary)";
+            }
+
+            updateSpotlight();
+
+            spotlight.classList.add('active');
+            setTimeout(() => dialog.classList.add('active'), 150);
+        }
+
+        function nextStep() {
+            if (currentStep < tourSteps.length - 1) {
+                dialog.classList.remove('active');
+                setTimeout(() => {
+                    currentStep++;
+                    showStep(currentStep);
+                }, 300);
+            } else {
+                endTour();
+            }
+        }
+
+        function endTour() {
+            dialog.classList.remove('active');
+            spotlight.classList.remove('active');
+            
+            setTimeout(() => window.location.replace('index.html'), 400);
+        }
+
+        // Recalculate spotlight if user resizes browser
+        window.addEventListener('resize', () => {
+            if (spotlight.classList.contains('active')) updateSpotlight();
+        });
+
+        // Start Tour
+        window.onload = () => setTimeout(() => showStep(currentStep), 300);
+    </script>
+</body>
+</html>
