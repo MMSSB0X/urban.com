@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Urban Harvest - Marketplace</title>
+    <script type="module" src="script.js"></script>
+    <script type="module" src="search.js"></script>      
+      <script type="module" src="product-list.js"></script> 
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    
+    <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div id="global-loader" class="global-loader">
+        <div class="loader-content">
+            <div class="loader-icon">
+                <i class="ph-fill ph-plant"></i>
+            </div>
+            <div class="loader-ring"></div>
+        </div>
+        <p class="loader-text">Harvesting data...</p>
+    </div>
+    <header class="header">
+        <div class="container header-top">
+            <div class="logo">
+                <i class="ph-fill ph-plant" style="font-size: 2rem;"></i>
+                <h1>URBAN</h1>
+            </div>
+            <button class="cart-btn" onclick="window.location.href='cart.html'">
+                <i class="ri-shopping-basket-line" style="font-size: 1.2rem;"></i>
+                <span class="cart-badge" style="display: none;">0</span>
+            </button>
+        </div>
+
+        <div class="container search-container">
+<div class="search-bar" style="position: relative;">
+                <i class="fa-solid fa-magnifying-glass text-muted"></i>
+                <input type="text" class="smart-search-input" placeholder="Search local produce..."/>
+                
+                <div class="search-suggestions hidden">
+                    </div>
+            </div>
+            <!-- <div class="filter-scroll">
+                <div class="chip active"><i class="ph-fill ph-map-pin" style="font-size: 1rem;"></i> My Neighborhood</div>
+                <div class="chip"><i class="ri-filter-3-line" style="font-size: 1rem;"></i> Filters</div>
+                <div class="chip">Fruits</div>
+                <div class="chip">Honey</div>
+            </div> -->
+        </div>
+    </header>
+
+    <main class="main-content">
+<div id="auth-state" style="display: flex; justify-content: flex-start; margin-bottom: 0.5rem;">
+            </div>
+
+        <!-- <section class="hero">
+            <div class="hero-bg" title="Lush green vegetable garden"></div>
+            <div class="hero-content">
+                <span class="hero-tag">Seasonal Selection</span>
+                <h2 class="hero-title">Fresh from the Garden</h2>
+                <p class="hero-desc">Picked today, delivered within hours to your doorstep.</p>
+            </div>
+        </section> -->
+<section class="hero">
+            <div class="hero-bg" title="Lush green vegetable garden"></div>
+            <div class="hero-content">
+                <span class="hero-tag">Seasonal Selection</span>
+                <h2 class="hero-title">Fresh from the Garden</h2>
+                <p class="hero-desc">Picked today, delivered within hours to your doorstep.</p>
+            </div>
+        </section>
+
+        <section style="margin-bottom: 2rem; display: flex; gap: 1rem; overflow-x: auto; padding-bottom: 0.5rem; scrollbar-width: none;">
+            <div style="min-width: 75px; text-align: center; cursor: pointer;" onclick="window.location.href='product-list.html?q=vegetables'">
+                <div style="width: 60px; height: 60px; background: #fee2e2; border-radius: 50%; margin: 0 auto 0.5rem; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">🍅</div>
+                <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-main);">Veggies</span>
+            </div>
+            <div style="min-width: 75px; text-align: center; cursor: pointer;" onclick="window.location.href='product-list.html?q=fruits'">
+                <div style="width: 60px; height: 60px; background: #ffedd5; border-radius: 50%; margin: 0 auto 0.5rem; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">🍊</div>
+                <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-main);">Fruits</span>
+            </div>
+            <div style="min-width: 75px; text-align: center; cursor: pointer;" onclick="window.location.href='product-list.html?q=dairy'">
+                <div style="width: 60px; height: 60px; background: #e0e7ff; border-radius: 50%; margin: 0 auto 0.5rem; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">🥛</div>
+                <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-main);">Dairy</span>
+            </div>
+            <div style="min-width: 75px; text-align: center; cursor: pointer;" onclick="window.location.href='product-list.html?q=honey'">
+                <div style="width: 60px; height: 60px; background: #fef3c7; border-radius: 50%; margin: 0 auto 0.5rem; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">🍯</div>
+                <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-main);">Honey</span>
+            </div>
+            <div style="min-width: 75px; text-align: center; cursor: pointer;" onclick="window.location.href='product-list.html'">
+                <div style="width: 60px; height: 60px; background: var(--input-bg); border-radius: 50%; margin: 0 auto 0.5rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--primary); box-shadow: 0 4px 6px rgba(0,0,0,0.05);"><i class="ph-bold ph-squares-four"></i></div>
+                <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-main);">See All</span>
+            </div>
+        </section>
+
+        <!-- <section style="margin-bottom: 2rem;">
+            <div style="background: linear-gradient(135deg, var(--primary), #10b981); border-radius: 1.25rem; padding: 1.5rem; color: white; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);">
+                <div>
+                    <span style="background: rgba(255,255,255,0.25); padding: 0.25rem 0.6rem; border-radius: 0.5rem; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Weekend Deal</span>
+                    <h3 style="font-weight: 800; font-size: 1.25rem; margin: 0.5rem 0 0.25rem;">20% Off Berries</h3>
+                    <p style="font-size: 0.85rem; font-weight: 500; opacity: 0.95;">Use code: <strong style="color: #fef08a;">BERRY20</strong></p>
+                </div>
+                <div style="font-size: 3.5rem; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.1));">🍓</div>
+            </div>
+        </section> -->
+
+        <section>
+            <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3 class="section-title" style="margin: 0;">New Arrivals</h3>
+                <a href="product-list.html" style="color: var(--primary); font-weight: 700; font-size: 0.875rem; text-decoration: none;">See All <i class="ph-bold ph-arrow-right"></i></a>
+            </div>
+            
+            <div class="product-grid" id="main-product-grid">
+                <p style="text-align: center; width: 100%; color: var(--text-muted);">Loading fresh produce...</p>
+            </div>
+        </section>
+    </main>
+        <!-- <section>
+            <div class="section-header">
+                <h3 class="section-title">New Arrivals</h3>
+                <a href="#" class="section-link">See All</a>
+            </div>
+            
+            <div class="product-grid" id="main-product-grid">
+                <p style="text-align: center; width: 100%; color: var(--text-muted);">Loading fresh produce...</p>
+            </div>
+        </section> -->
+    </main>
+
+    <nav class="side-nav" id="sideNav">
+        <a href="index.html" class="nav-item active">
+            <i class="ri-store-2-fill nav-icon" data-inactive="ri-store-2-line" data-active="ri-store-2-fill"></i>
+            <span class="nav-label">Market</span>
+        </a>
+        <a href="product-list.html" class="nav-item">
+            <i class="ph ph-squares-four nav-icon" data-inactive="ph ph-book-open-text" data-active="ph-fill ph-book-open-text"></i>
+            <span class="nav-label">Products</span>
+        </a>
+        <a href="inbox.html" class="nav-item">
+            <i class="ph ph-tray nav-icon" data-inactive="ph ph-tray" data-active="ph-fill ph-tray"></i>
+            <!-- <i class="ph ph-squares-four nav-icon" data-inactive="ph ph-book-open-text" data-active="ph-fill ph-book-open-text"></i> -->
+            <span class="nav-label">Inbox</span>
+        </a>
+        <!-- <a href="#" class="nav-item">
+            <i class="ph ph-book-open-text nav-icon" data-inactive="ph ph-book-open-text" data-active="ph-fill ph-book-open-text"></i>
+            <span class="nav-label">Learn</span>
+        </a> -->
+        <!-- <a href="cart.html" class="nav-item">
+            <i class="ri-shopping-cart-line nav-icon" data-inactive="ri-shopping-cart-line" data-active="ri-shopping-cart-fill"></i>
+            <span class="nav-label">Cart</span>
+        </a> -->
+        <a href="profile.html" class="nav-item">
+            <i class="ri-user-line nav-icon" data-inactive="ri-user-line" data-active="ri-user-fill"></i>
+            <span class="nav-label">Profile</span>
+        </a>
+    </nav>
+
+    <div id="toast-container"></div>
+    
+
+</body>
+</html>
