@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Create Post - Urban Harvest</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="style.css"/>
+        <link rel="stylesheet" href="assets/remix/remixicon.css">
+    <link rel="stylesheet" href="assets/fa/css/all.css">
+    <script src="assets/phosphor/index.js"></script>
+    <style>
+        .create-post-container {
+            background: rgba(255, 255, 255, 0.85); 
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .post-textarea {
+            width: 100%;
+            min-height: 120px;
+            border: none;
+            resize: none;
+            font-size: 1.1rem;
+            color: var(--text-main);
+            background: transparent;
+            font-family: inherit;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+        .post-textarea:focus { outline: none; }
+        .post-textarea::placeholder { color: #94a3b8; }
+        
+        .tag-section {
+            background: var(--input-bg);
+            border-radius: 1rem;
+            padding: 1rem;
+            border: 1px solid var(--card-border);
+        }
+
+        .tag-section-title { 
+            font-size: 0.875rem; 
+            font-weight: 700; 
+            color: var(--text-main); 
+            display: flex; 
+            align-items: center; 
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Modal Trigger Button */
+        .open-modal-btn { 
+            width: 100%; 
+            padding: 1rem; 
+            border: 2px dashed var(--card-border); 
+            border-radius: 1rem; 
+            background: transparent; 
+            color: var(--text-muted); 
+            font-weight: 700; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 0.5rem; 
+            cursor: pointer; 
+            transition: all 0.2s; 
+        }
+        .open-modal-btn:hover { 
+            border-color: var(--primary); 
+            color: var(--primary); 
+            background: rgba(45, 150, 54, 0.05); 
+        }
+
+        /* Display Selected Product inside form */
+        .selected-chip { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 0.75rem; 
+            background: var(--card-bg); 
+            border: 1px solid var(--primary); 
+            border-radius: 1rem; 
+            box-shadow: 0 4px 6px rgba(45, 150, 54, 0.1);
+        }
+        .selected-chip-content { display: flex; align-items: center; gap: 0.75rem; }
+        .selected-chip img { width: 3rem; height: 3rem; border-radius: 0.5rem; object-fit: cover; }
+        .selected-chip h5 { font-size: 0.95rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.25rem;}
+        .selected-chip p { font-size: 0.75rem; color: var(--primary); font-weight: 600;}
+        .remove-tag-btn { color: #ef4444; padding: 0.5rem; background: rgba(239, 68, 68, 0.1); border-radius: 0.5rem; cursor: pointer; transition: background 0.2s; }
+        .remove-tag-btn:hover { background: rgba(239, 68, 68, 0.2); }
+
+        .publish-btn {
+            width: 100%;
+            background: var(--primary);
+            color: var(--bg-dark);
+            font-weight: 800;
+            padding: 1.125rem;
+            border-radius: 1rem;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(45, 150, 54, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .publish-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 20px -3px rgba(45, 150, 54, 0.4);
+        }
+        .publish-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        /* MODAL STYLES */
+        .modal-overlay { 
+            position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 1000; 
+            display: flex; align-items: flex-end; justify-content: center; opacity: 0; visibility: hidden; transition: all 0.3s ease; 
+        }
+        @media(min-width: 768px) { .modal-overlay { align-items: center; } }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        
+        .modal-content { 
+            background: var(--bg-main); width: 100%; max-width: 500px; border-radius: 1.5rem 1.5rem 0 0; 
+            padding: 1.5rem; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); 
+            max-height: 85vh; display: flex; flex-direction: column; 
+        }
+        @media(min-width: 768px) { .modal-content { border-radius: 1.5rem; transform: scale(0.95); } }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        @media(min-width: 768px) { .modal-overlay.active .modal-content { transform: scale(1); } }
+        
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .modal-title { font-size: 1.25rem; font-weight: 800; }
+        .close-modal-btn { font-size: 1.5rem; color: var(--text-muted); transition: color 0.2s; background: var(--input-bg); width: 2.5rem; height: 2.5rem; border-radius: 50%; display: flex; align-items: center; justify-content: center;}
+        .close-modal-btn:hover { color: #ef4444; }
+
+        .product-search-input-full { 
+            width: 100%; background: var(--card-bg); border: 1px solid var(--card-border); padding: 1rem; 
+            border-radius: 1rem; font-size: 1rem; outline: none; margin-bottom: 1.5rem; 
+        }
+        .product-search-input-full:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(45, 150, 54, 0.15);}
+
+        .product-list-vertical { overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem; flex: 1; scrollbar-width: thin; padding-right: 0.5rem; }
+        .product-list-item { 
+            display: flex; align-items: center; gap: 1rem; padding: 0.75rem; background: var(--card-bg); border-radius: 1rem; 
+            border: 1px solid var(--card-border); cursor: pointer; transition: all 0.2s; 
+        }
+        .product-list-item:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .product-list-item img { width: 3.5rem; height: 3.5rem; border-radius: 0.5rem; object-fit: cover; background: var(--badge-bg);}
+        .product-list-info { flex: 1; }
+        .product-list-info h5 { font-size: 0.95rem; font-weight: 800; margin-bottom: 0.25rem; }
+        .product-list-info p { font-size: 0.75rem; color: var(--primary); font-weight: 700; }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="container header-top" style="margin-bottom: 0;">
+            <button class="back-btn" onclick="history.back()" style="border: none; background: transparent; font-size: 1.25rem; cursor: pointer;">
+                <i class="ph-bold ph-arrow-left"></i>
+            </button>
+            <h2 class="page-title" style="flex:1; text-align:center; font-size: 1.125rem; font-weight: 800;">Create Post</h2>
+            <div style="width: 2rem;"></div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <form id="create-post-form">
+            <div class="create-post-container">
+                <textarea id="post-content" class="post-textarea" placeholder="What's growing on? Include links and #hashtags!" required></textarea>
+                
+                <div class="tag-section">
+                    <div class="tag-section-title"><i class="ph-fill ph-tag text-muted"></i> Tag a Product</div>
+                    
+                    <button type="button" id="open-product-modal-btn" class="open-modal-btn">
+                        <i class="ph-bold ph-plus-circle" style="font-size: 1.2rem;"></i> Select Product
+                    </button>
+                    
+                    <div id="selected-product-display" style="display: none; margin-top: 1rem;">
+                        </div>
+                    
+                    <input type="hidden" id="selected-product-id" value="">
+                </div>
+            </div>
+            
+            <button type="submit" class="publish-btn" id="submit-post-btn">
+                <i class="ph-bold ph-paper-plane-tilt"></i> Publish Post
+            </button>
+        </form>
+    </main>
+
+    <div class="modal-overlay" id="product-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Select a Product</h3>
+                <button type="button" class="close-modal-btn" id="close-product-modal"><i class="ph-bold ph-x"></i></button>
+            </div>
+            <input type="text" id="modal-product-search" class="product-search-input-full" placeholder="Search by name or category...">
+            <div class="product-list-vertical" id="modal-product-list">
+                </div>
+        </div>
+    </div>
+
+    <script type="module" src="create-post.js"></script>
+</body>
+</html>

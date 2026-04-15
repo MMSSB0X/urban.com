@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>Community - Urban Harvest</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/> -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="assets/remix/remixicon.css">
+    <link rel="stylesheet" href="assets/fa/css/all.css">
+    <script src="assets/phosphor/index.js"></script>
+    <link rel="stylesheet" href="style.css"/>
+    <script type="module" src="script.js"></script>
+        <script type="module" src="community.js"></script>
+
+    
+    <style>
+        /* =========================================
+           MOBILE-FIRST BASE STYLES 
+           ========================================= */
+        body { overflow-x: hidden; } /* Prevents side-scrolling */
+           
+        .community-layout { 
+            display: grid; 
+            grid-template-columns: 1fr; 
+            gap: 1rem; 
+            max-width: 1000px; 
+            margin: 0 auto; 
+            padding-bottom: 5rem; 
+            width: 100%;
+        }
+
+        .community-header { 
+            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.5); 
+            border-radius: 1rem; padding: 1rem; display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; 
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03); cursor: pointer; transition: transform 0.2s; width: 100%;
+        }
+        .community-header:hover { transform: translateY(-2px); }
+        .community-header .avatar { flex-shrink: 0; width: 2.5rem; height: 2.5rem; border-radius: 50%; background: var(--badge-bg); display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 1.25rem;}
+        .community-header .fake-input { flex: 1; background: var(--input-bg); padding: 0.75rem 1rem; border-radius: 2rem; color: var(--text-muted); font-size: 0.85rem; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; min-width: 0;}
+        .community-header .ph-image { font-size: 1.25rem; flex-shrink: 0; }
+
+        .post-card { 
+            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.5); 
+            border-radius: 1.25rem; padding: 1rem; margin-bottom: 1rem; box-shadow: 0 4px 15px rgba(0,0,0,0.03); 
+            width: 100%; overflow: hidden; max-width: 100vw;
+        }
+        
+        .post-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
+        .post-header .author-avatar { flex-shrink: 0; width: 2.5rem; height: 2.5rem; border-radius: 50%; background: linear-gradient(135deg, var(--primary), #10b981); color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1rem; text-transform: uppercase; box-shadow: 0 4px 10px rgba(45, 150, 54, 0.3); }
+        .post-header-info { display: flex; flex-direction: column; overflow: hidden; }
+        .post-header-info h4 { font-size: 0.95rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .post-header-info span { font-size: 0.7rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.25rem; font-weight: 500;}
+        
+        /* --- 3-DOTS MENU STYLES --- */
+        .post-header-actions { margin-left: auto; position: relative; }
+        .more-options-btn { background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; padding: 0.25rem; transition: color 0.2s; }
+        .more-options-btn:hover { color: var(--text-main); }
+        .post-dropdown { position: absolute; right: 0; top: 100%; background: white; border: 1px solid var(--card-border); border-radius: 0.75rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1); padding: 0.5rem; display: none; z-index: 10; min-width: 140px; }
+        .post-dropdown.active { display: block; animation: slideDownFade 0.2s ease; }
+        .dropdown-item { width: 100%; text-align: left; background: none; border: none; padding: 0.6rem .5rem; color: #ef4444; font-size: 0.85rem; font-weight: 700; border-radius: 0.5rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: background 0.2s; }
+        .dropdown-item:hover { background: rgba(239, 68, 68, 0.1); }
+
+        /* THE TEXT OVERFLOW FIX */
+        .post-content { 
+            font-size: 0.95rem; 
+            color: var(--text-main); 
+            line-height: 1.5; 
+            margin-bottom: 1rem; 
+            word-wrap: break-word; 
+            overflow-wrap: break-word; 
+            word-break: break-word; /* Forces long unbroken text to wrap */
+            width: 100%;
+        }
+        .hashtag { color: var(--primary); font-weight: 700; text-decoration: none; transition: opacity 0.2s; display: inline-block; }
+        .hashtag:hover { opacity: 0.8; text-decoration: underline; }
+        
+        /* LINK STYLING */
+        .post-link {
+            color: #3b82f6; 
+            text-decoration: underline; 
+            font-weight: 600;
+            word-break: break-all; /* Ensures long URLs break and don't stretch the screen */
+        }
+        
+        .tagged-product { 
+            display: flex; align-items: center; gap: 0.75rem; background: var(--bg-main); border: 1px solid var(--card-border); 
+            padding: 0.5rem; border-radius: 0.75rem; margin-bottom: 1rem; text-decoration: none; transition: all 0.2s; 
+            max-width: 100%; overflow: hidden;
+        }
+        .tagged-product:hover { background: var(--input-bg); }
+        .tagged-product img { flex-shrink: 0; width: 3.5rem; height: 3.5rem; border-radius: 0.5rem; object-fit: cover; background: white; }
+        .tagged-product-info { overflow: hidden; display: flex; flex-direction: column; min-width: 0; }
+        .tagged-product-info h5 { font-size: 0.85rem; font-weight: 800; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .tagged-product-info p { font-size: 0.75rem; color: var(--primary); font-weight: 700; margin-top: 0.1rem; }
+
+        .post-stats { display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 600; color: var(--text-muted); padding-bottom: 0.5rem; border-bottom: 1px solid var(--card-border); margin-bottom: 0.5rem; }
+        
+        .post-actions { display: flex; gap: 0.25rem; justify-content: space-between; }
+        .action-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.35rem; padding: 0.5rem 0.25rem; color: var(--text-muted); font-size: 0.75rem; font-weight: 700; border-radius: 0.5rem; transition: all 0.2s; cursor: pointer; white-space: nowrap; background: transparent; border: none;}
+        .action-btn:hover { background: var(--input-bg); color: var(--text-main); }
+        .action-btn.liked { color: #ef4444; background: rgba(239, 68, 68, 0.08); }
+        .action-btn.saved { color: #f59e0b; }
+        .action-btn i { font-size: 1rem; }
+        .action-btn.liked i, .action-btn.saved i { font-weight: 900; } 
+
+        .comments-section { display: none; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--card-border); }
+        .comments-section.active { display: block; animation: slideDownFade 0.3s ease; }
+        
+        .comments-list { max-height: 250px; overflow-y: auto; padding-right: 0.25rem; scrollbar-width: none; }
+        .comments-list::-webkit-scrollbar { display: none; }
+        
+        .comment-item { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; }
+        .comment-avatar { flex-shrink: 0; width: 2rem; height: 2rem; border-radius: 50%; background: var(--badge-bg); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 800; color: var(--text-main); }
+        .comment-body { background: var(--input-bg); padding: 0.6rem 0.85rem; border-radius: 0 1rem 1rem 1rem; flex: 1; border: 1px solid rgba(0,0,0,0.02); min-width: 0; }
+        .comment-author { font-size: 0.8rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.15rem; }
+        .comment-text { font-size: 0.85rem; color: var(--text-main); line-height: 1.4; word-wrap: break-word; overflow-wrap: break-word; word-break: break-word; }
+        .comment-time { font-size: 0.65rem; color: var(--text-muted); margin-top: 0.25rem; display: block; font-weight: 500;}
+
+        .comment-input-wrapper { display: flex; gap: 0.5rem; align-items: center; margin-top: 1rem; }
+        .comment-input-wrapper .my-avatar { display: none; } 
+        
+        .comment-input-wrapper input { 
+            flex: 1; min-width: 0;
+            background: var(--input-bg); 
+            border: 1px solid var(--card-border); 
+            padding: 0.75rem 1rem; 
+            border-radius: 2rem; 
+            font-size: 16px !important; 
+            outline: none; 
+            transition: border-color 0.2s; 
+        }
+        .comment-input-wrapper input:focus { border-color: var(--primary); background: var(--bg-main); }
+        
+        .send-comment-btn { flex-shrink: 0; width: 2.5rem; height: 2.5rem; border-radius: 50%; background: var(--primary); color: var(--bg-dark); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: transform 0.2s; cursor: pointer; box-shadow: 0 4px 10px rgba(45, 150, 54, 0.3); border: none;}
+        .send-comment-btn:active { transform: scale(0.95); }
+        .send-comment-btn:disabled { background: var(--badge-bg); color: var(--text-muted); cursor: not-allowed; box-shadow: none;}
+
+        .widget-card { display: none; } 
+
+        /* --- CUSTOM MODAL STYLES --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-box {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            width: 90%;
+            max-width: 350px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transform: translateY(20px) scale(0.95);
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.active .modal-box {
+            transform: translateY(0) scale(1);
+        }
+        
+        .modal-icon { font-size: 3rem; color: #ef4444; margin-bottom: 1rem; }
+        .modal-title { font-size: 1.25rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.5rem; }
+        .modal-text { font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.5; }
+        
+        .modal-actions { display: flex; gap: 0.75rem; }
+        
+        .modal-btn { 
+            flex: 1; padding: 0.75rem; border-radius: 0.75rem; 
+            font-weight: 700; font-size: 0.875rem; border: none; 
+            cursor: pointer; transition: all 0.2s; 
+        }
+        
+        .btn-cancel { background: var(--input-bg); color: var(--text-main); }
+        .btn-cancel:hover { background: #e2e8f0; }
+        
+        .btn-delete { background: #ef4444; color: white; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3); }
+        .btn-delete:hover { background: #dc2626; transform: translateY(-2px); }
+
+        @media (min-width: 768px) {
+            .community-layout { padding-bottom: 2rem; }
+            .community-header { padding: 1.25rem; gap: 1rem; margin-bottom: 1.5rem; border-radius: 1.5rem; }
+            .community-header .avatar { width: 3rem; height: 3rem; font-size: 1.5rem; }
+            .community-header .fake-input { padding: 1rem 1.25rem; font-size: 0.95rem; }
+            .community-header .ph-image { font-size: 1.5rem; }
+            .post-card { padding: 1.5rem; border-radius: 1.5rem; margin-bottom: 1.5rem; }
+            .post-header { gap: 1rem; margin-bottom: 1rem; }
+            .post-header .author-avatar { width: 3rem; height: 3rem; font-size: 1.2rem; }
+            .post-header-info h4 { font-size: 1rem; }
+            .post-header-info span { font-size: 0.75rem; }
+            .post-content { font-size: 1rem; line-height: 1.6; }
+            .tagged-product { padding: 0.75rem; border-radius: 1rem; gap: 1rem;}
+            .tagged-product img { width: 4rem; height: 4rem; }
+            .tagged-product-info h5 { font-size: 0.95rem; }
+            .tagged-product-info p { font-size: 0.8rem; margin-top: 0.25rem;}
+            .post-stats { font-size: 0.8rem; padding-bottom: 0.75rem; margin-bottom: 0.75rem;}
+            .action-btn { gap: 0.5rem; padding: 0.75rem; font-size: 0.875rem; border-radius: 0.75rem; }
+            .action-btn i { font-size: 1.2rem; }
+            .comments-section { margin-top: 1rem; padding-top: 1rem; }
+            .comments-list { max-height: 350px; padding-right: 0.5rem; }
+            .comment-item { gap: 0.75rem; margin-bottom: 1rem; }
+            .comment-avatar { width: 2.25rem; height: 2.25rem; font-size: 0.85rem; }
+            .comment-body { padding: 0.85rem 1.25rem; border-radius: 0 1.25rem 1.25rem 1.25rem; }
+            .comment-text { font-size: 0.95rem; }
+            .comment-time { font-size: 0.7rem; margin-top: 0.5rem; }
+            .comment-input-wrapper { gap: 0.75rem; margin-top: 1.5rem; }
+            .comment-input-wrapper .my-avatar { display: flex; width: 2.5rem; height: 2.5rem; border-radius: 50%; background: var(--badge-bg); align-items: center; justify-content: center; font-size: 1.2rem; color: var(--primary);}
+            .comment-input-wrapper input { padding: 0.85rem 1.25rem; font-size: 0.95rem !important; }
+            .send-comment-btn { width: 3rem; height: 3rem; font-size: 1.2rem; }
+            .send-comment-btn:hover { transform: scale(1.05); }
+        }
+
+        @media (min-width: 1024px) {
+            .community-layout { 
+                /* grid-template-columns: 2fr 1fr; */
+                 align-items: start; }
+            .sidebar-bento { position: sticky; top: 6rem; display: flex; flex-direction: column; gap: 1.5rem; }
+            .widget-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.5); border-radius: 1.5rem; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: block;}
+            .widget-title { font-size: 1rem; font-weight: 800; color: var(--text-main); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;}
+            .trend-tag { display: inline-block; padding: 0.4rem 0.75rem; background: var(--input-bg); color: var(--text-main); border-radius: 0.5rem; font-size: 0.8rem; font-weight: 600; margin: 0.25rem; transition: background 0.2s; cursor: pointer;}
+            .trend-tag:hover { background: rgba(45, 150, 54, 0.1); color: var(--primary); }
+        }
+    </style>
+</head>
+<body>
+<div id="global-loader" class="global-loader">
+        <div class="loader-content">
+            <div class="loader-icon">
+                <i class="ph-fill ph-plant"></i>
+            </div>
+            <div class="loader-ring"></div>
+        </div>
+        <p class="loader-text">Harvesting Community...</p>
+    </div>
+    <header class="header">
+        <div class="container header-top" style="margin-bottom: 0;">
+            <div class="logo">
+                <h1>Community</h1>
+            </div>
+            <button class="cart-btn" onclick="window.location.href='cart.html'">
+                <i class="ri-shopping-basket-line" style="font-size: 1.2rem;"></i>
+                <span class="cart-badge" style="display: none;">0</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="main-content" style="padding: 1rem; width: 100%; box-sizing: border-box;">
+        <div class="community-layout">
+            
+            <div class="feed-column" style="min-width: 0;">
+                <div class="community-header" onclick="window.location.href='create-post.html'">
+                    <div class="avatar"><i class="ph-fill ph-user"></i></div>
+                    <div class="fake-input">What's growing on, friend?</div>
+                    <i class="ph ph-plus-circle text-muted" style="font-size: x-large;"></i>
+                </div>
+
+                <div id="posts-feed">
+                    <div style="text-align: center; padding: 3rem 1rem;">
+                        <i class="fa-solid fa-spinner fa-spin text-muted" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                        <p style="color: var(--text-muted); font-weight: 600; font-size: 0.875rem;">Loading community posts...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div class="sidebar-bento">
+                <div class="widget-card">
+                    <h3 class="widget-title"><i class="ph-fill ph-trend-up text-primary"></i> Trending Topics</h3>
+                    <div>
+                        <span class="trend-tag">#OrganicFarming</span>
+                        <span class="trend-tag">#UrbanHarvest</span>
+                        <span class="trend-tag">#FreshTomatoes</span>
+                        <span class="trend-tag">#BalconyGarden</span>
+                        <span class="trend-tag">#LocalHoney</span>
+                    </div>
+                </div>
+                
+                <div class="widget-card">
+                    <h3 class="widget-title"><i class="ph-fill ph-medal text-primary" style="color: #f59e0b;"></i> Top Contributors</h3>
+                    <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <div style="width: 2.5rem; height: 2.5rem; border-radius: 50%; background: #fee2e2; color: #ef4444; display: flex; align-items: center; justify-content: center; font-weight: 800;">A</div>
+                            <div>
+                                <p style="font-size: 0.875rem; font-weight: 700; color: var(--text-main); margin: 0;">Ahmed N.</p>
+                                <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0;">142 Posts</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <div style="width: 2.5rem; height: 2.5rem; border-radius: 50%; background: #e0e7ff; color: #3b82f6; display: flex; align-items: center; justify-content: center; font-weight: 800;">S</div>
+                            <div>
+                                <p style="font-size: 0.875rem; font-weight: 700; color: var(--text-main); margin: 0;">Sarah K.</p>
+                                <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0;">89 Posts</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+
+        </div>
+    </main>
+
+    <nav class="side-nav" id="sideNav">
+        <a href="index.html" class="nav-item">
+            <i class="ri-store-2-line nav-icon"></i>
+            <span class="nav-label">Market</span>
+        </a>
+                <a href="product-list.html" class="nav-item">
+            <i class="ph ph-squares-four nav-icon"></i>
+            <span class="nav-label">Products</span>
+        </a>
+        <a href="#" class="nav-item active">
+            <i class="ph-fill ph-users nav-icon"></i>
+            <span class="nav-label">Community</span>
+        </a>
+        <a href="inbox.html" class="nav-item">
+            <i class="ph ph-tray nav-icon" data-inactive="ph ph-tray" data-active="ph-fill ph-tray"></i>
+            <!-- <i class="ph ph-squares-four nav-icon" data-inactive="ph ph-book-open-text" data-active="ph-fill ph-book-open-text"></i> -->
+            <span class="nav-label">Inbox</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <i class="ri-user-line nav-icon"></i>
+            <span class="nav-label">Profile</span>
+        </a>
+    </nav>
+
+    <div id="delete-confirm-modal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-icon">
+                <i class="ph-fill ph-warning-circle"></i>
+            </div>
+            <h3 class="modal-title">Delete Post?</h3>
+            <p class="modal-text">Are you sure you want to delete this post? This action cannot be undone.</p>
+            <div class="modal-actions">
+                <button id="cancel-delete-btn" class="modal-btn btn-cancel">Cancel</button>
+                <button id="confirm-delete-btn" class="modal-btn btn-delete">Delete</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
