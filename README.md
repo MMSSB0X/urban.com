@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/phosphor-icons/core/main/assets/regular/plant.svg" alt="Urban Harvest Logo" width="100" height="100">
+  <img src="app/images/logo.png" alt="Urban Harvest Logo" width="100" height="100">
   
   # Urban Harvest 🌿
   
