@@ -34,17 +34,4 @@ This project intentionally avoids heavy frontend frameworks like React or Tailwi
 * **Icons:** FontAwesome & Phosphor Icons.
 * **Design Assets:** Custom modern styling with subtle glassmorphism and animated loaders.
 
-## 📂 Project Structure
 
-```text
-/
-├── index.html          # Main store / product feed
-├── signup.html         # User registration page
-├── login.html          # User login page
-├── product.html        # Detailed product view
-├── cart.html           # Shopping cart and checkout
-├── profile.html        # User profile and order history
-├── style.css           # Global custom stylesheet
-├── auth.js             # Firebase authentication logic
-├── app.js              # Main application logic (cart, UI interactions)
-└── firebase.js         # Firebase initialization and config
