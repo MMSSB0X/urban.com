@@ -5,9 +5,7 @@
   
   **Fresh local produce delivered straight from the farm to your door.**
   
-  [![Tech Stack: HTML/CSS/JS](https://img.shields.io/badge/Tech_Stack-Vanilla_Web-2d9636?style=flat-square)]()
-  [![Database: Firebase](https://img.shields.io/badge/Database-Firebase-FFCA28?style=flat-square&logo=firebase&logoColor=black)]()
-  [![Status: Active](https://img.shields.io/badge/Status-Active-success?style=flat-square)]()
+
 </div>
 
 ---
