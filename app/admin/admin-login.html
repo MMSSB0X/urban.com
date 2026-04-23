@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>Admin Login - Urban Harvest</title>
+    
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="admin-style.css"/>
+</head>
+<body class="admin-login-body">
+
+    <div class="blur-circle top-circle"></div>
+    <div class="blur-circle bottom-circle"></div>
+
+    <div class="login-card">
+        <div class="login-logo">
+            <i class="ph-fill ph-plant"></i>
+        </div>
+        
+        <h1 class="login-title">Admin Portal</h1>
+        <p class="login-subtitle">Sign in to manage Urban Harvest</p>
+
+        <form id="admin-login-form">
+            <div class="login-input-group">
+                <i class="ph-bold ph-envelope-simple login-input-icon"></i>
+                <input type="email" id="admin-email" class="login-input" placeholder="Admin Email" required>
+            </div>
+
+            <div class="login-input-group">
+                <i class="ph-bold ph-lock-key login-input-icon"></i>
+                <input type="password" id="admin-pass" class="login-input" placeholder="Password" required>
+            </div>
+
+            <button type="submit" class="btn-main login-btn" style="width: 100%; justify-content: center; margin-top: 1rem; height: 3.5rem;">
+                Sign In
+            </button>
+        </form>
+        
+        <div id="login-error" style="color: var(--danger); text-align: center; margin-top: 1rem; font-size: 0.875rem; font-weight: 600;"></div>
+    </div>
+
+    <script type="module" src="admin-core.js"></script>
+    
+    <script type="module">
+        import { auth } from "./firebase.js";
+        import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+
+        // IMPORTANT: Make sure this matches the list in your admin-core.js!
+        const ALLOWED_ADMINS = [
+            'mmssbishady0@gmail.com',
+            'mmsbishady0@gmail.com'
+   
+        ]; 
+
+        document.getElementById('admin-login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('admin-email').value.trim();
+            const pass = document.getElementById('admin-pass').value;
+            const btn = document.querySelector('.login-btn');
+            const errorDiv = document.getElementById('login-error');
+
+            errorDiv.innerText = ""; // Clear errors
+
+            // Verify email is in the allowed admin list before trying Firebase
+            if (!ALLOWED_ADMINS.includes(email.toLowerCase())) {
+                errorDiv.innerText = "Access Denied: Unauthorized admin email.";
+                return;
+            }
+
+            btn.innerHTML = '<i class="ph-bold ph-spinner ph-spin"></i> Authenticating...';
+            
+            try {
+                await signInWithEmailAndPassword(auth, email, pass);
+                // Redirect on success
+                window.location.replace('admin-dashboard.html');
+            } catch (error) {
+                console.error(error);
+                errorDiv.innerText = "Invalid credentials. Please try again.";
+                btn.innerHTML = 'Sign In';
+            }
+        });
+    </script>
+</body>
+</html>

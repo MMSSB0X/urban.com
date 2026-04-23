@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>Admin | Settings</title>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="admin-style.css"/>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
+        <script>
+        // Set Theme instantly
+        const theme = localStorage.getItem('adm-theme') || 'system';
+        if (theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+        }
+        // Set Sidebar instantly
+        if (localStorage.getItem('sidebar-collapsed') === 'true') {
+            document.documentElement.classList.add('sidebar-is-collapsed');
+        }
+    </script>
+</head>
+<body>
+
+    <header class="mobile-header">
+        <div class="sidebar-logo"><i class="ph-fill ph-plant"></i> Urban Admin</div>
+        <button class="mobile-menu-btn" id="open-mobile-menu"><i class="ph-bold ph-list"></i></button>
+    </header>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="mobile-bottom-menu" id="bottomMenu">
+        <div class="drag-handle-zone" id="dragZone"><div class="drag-handle"></div></div>
+        <div class="mobile-nav-grid">
+            <a href="admin-dashboard.html" class="mobile-nav-item"><i class="ph-bold ph-squares-four"></i> Dashboard</a>
+            <a href="admin-orders.html" class="mobile-nav-item"><i class="ph-bold ph-package"></i> Orders</a>
+            <!-- <a href="admin-products.html" class="mobile-nav-item"><i class="ph-bold ph-tag"></i> Products</a> -->
+            <a href="admin-users.html" class="mobile-nav-item"><i class="ph-bold ph-users"></i> Users</a>
+            <a href="admin-settings.html" class="mobile-nav-item active"><i class="ph-bold ph-gear"></i> Settings</a>
+        </div>
+    </div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <i class="ph-fill ph-plant"></i>
+            <span class="logo-text">Urban Admin</span>
+        </div>
+        
+        <nav class="nav-links">
+            <a href="admin-dashboard.html" class="nav-item "><i class="ph-bold ph-squares-four"></i> <span class="logo-text">Dashboard</span></a>
+            <a href="admin-orders.html" class="nav-item"><i class="ph-bold ph-package"></i> <span class="logo-text">Orders</span></a>
+            <a href="admin-users.html" class="nav-item"><i class="ph-bold ph-users"></i> <span class="logo-text">Users</span></a>
+            <a href="admin-settings.html" class="nav-item active"><i class="ph-bold ph-gear"></i> <span class="logo-text">Settings</span></a>
+        </nav>
+
+        <button id="toggle-sidebar" class="sidebar-toggle-btn">
+            <i class="ph-bold ph-caret-double-left"></i>
+            <span class="logo-text">Collapse</span>
+        </button>
+
+        <div class="nav-item logout-btn" style="color: var(--danger); cursor: pointer; padding-top: 0;">
+            <i class="ph-bold ph-sign-out"></i> <span class="logo-text">Logout</span>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h2 class="page-title">Settings</h2>
+        </div>
+
+        <div style="display: grid; 
+        /* grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); */
+         gap: 1.5rem; max-width: 1000px;">
+            
+            <div class="stat-card" style="flex-direction: column; align-items: flex-start; height: fit-content;">
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                    <div style="width: 2.5rem; height: 2.5rem; background: var(--primary-light); color: var(--primary); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;"><i class="ph-bold ph-palette"></i></div>
+                    <h3 style="font-weight: 800;">Appearance</h3>
+                </div>
+                <p style="color: var(--text-grey); font-size: 0.875rem; margin-bottom: 1.5rem;">Customize the look of your admin panel.</p>
+                
+                <div style="display: flex; gap: 0.5rem; width: 100%;">
+                    <button class="theme-btn" data-theme-val="light" style="flex:1; padding:1rem; border-radius:0.75rem; border:2px solid var(--border-color); background:transparent; color:var(--text-main); font-weight:700; cursor:pointer;">
+                        <i class="ph-bold ph-sun" style="font-size:1.25rem; display:block; margin-bottom:0.25rem;"></i> Light
+                    </button>
+                    <button class="theme-btn" data-theme-val="dark" style="flex:1; padding:1rem; border-radius:0.75rem; border:2px solid var(--border-color); background:transparent; color:var(--text-main); font-weight:700; cursor:pointer;">
+                        <i class="ph-bold ph-moon" style="font-size:1.25rem; display:block; margin-bottom:0.25rem;"></i> Dark
+                    </button>
+                    <button class="theme-btn" data-theme-val="system" style="flex:1; padding:1rem; border-radius:0.75rem; border:2px solid var(--border-color); background:transparent; color:var(--text-main); font-weight:700; cursor:pointer;">
+                        <i class="ph-bold ph-desktop" style="font-size:1.25rem; display:block; margin-bottom:0.25rem;"></i> System
+                    </button>
+                </div>
+            </div>
+
+            <!-- <div class="stat-card" style="flex-direction: column; align-items: flex-start; height: fit-content;">
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                    <div style="width: 2.5rem; height: 2.5rem; background: rgba(59,130,246,0.1); color: #3b82f6; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;"><i class="ph-bold ph-storefront"></i></div>
+                    <h3 style="font-weight: 800;">Store Config</h3>
+                </div>
+                <p style="color: var(--text-grey); font-size: 0.875rem; margin-bottom: 1.5rem;">Manage global store settings.</p>
+                
+                <form id="store-config-form" style="width: 100%;">
+                    <div class="input-group">
+                        <label>Global Announcement</label>
+                        <input type="text" id="cfg-announcement" placeholder="e.g. Free shipping this weekend!" style="width: 100%;">
+                    </div>
+                    <div class="input-group">
+                        <label>Delivery Fee (EGP)</label>
+                        <input type="number" id="cfg-delivery" placeholder="0" style="width: 100%;">
+                    </div>
+                    <button type="submit" id="save-cfg-btn" class="btn-main" style="width: 100%; justify-content: center; margin-top: 0.5rem;">Save Configuration</button>
+                </form>
+            </div> -->
+
+            <div class="stat-card" style="flex-direction: column; align-items: flex-start; height: fit-content; grid-column: 1 / -1;">
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                    <div style="width: 2.5rem; height: 2.5rem; background: rgba(245,158,11,0.1); color: #f59e0b; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;"><i class="ph-bold ph-database"></i></div>
+                    <h3 style="font-weight: 800;">Firebase Developer Links</h3>
+                </div>
+                <p style="color: var(--text-grey); font-size: 0.875rem; margin-bottom: 1.5rem;">Quickly access your backend services.</p>
+                
+                <div style="display: flex; flex-wrap: wrap; gap: 1rem; width: 100%;">
+                    <a href="https://console.firebase.google.com/project/nutra-egypt/overview" target="_blank" class="btn-main" style="background: var(--card-bg); color: var(--text-main); border: 1px solid var(--border-color); flex: 1; justify-content: center; min-width: 150px;">
+                        <img src="https://www.gstatic.com/mobilesdk/160503_mobilesdk/logo/2x/firebase_28dp.png" style="height: 1.25rem; margin-right: 0.5rem;"> Console
+                    </a>
+                    <a href="https://console.firebase.google.com/project/nutra-egypt/firestore/" target="_blank" class="btn-main" style="background: var(--card-bg); color: var(--text-main); border: 1px solid var(--border-color); flex: 1; justify-content: center; min-width: 150px;">
+                        <i class="ph-bold ph-hard-drives" style="color: #f59e0b; font-size: 1.25rem;"></i> Database
+                    </a>
+                    <a href="https://console.firebase.google.com/project/nutra-egypt/authentication/users" target="_blank" class="btn-main" style="background: var(--card-bg); color: var(--text-main); border: 1px solid var(--border-color); flex: 1; justify-content: center; min-width: 150px;">
+                        <i class="ph-bold ph-users-three" style="color: #3b82f6; font-size: 1.25rem;"></i> Authentication
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script type="module" src="admin-core.js"></script>
+    <script type="module">
+        import { applyTheme } from "./admin-core.js";
+        import { db } from "./firebase.js";
+        import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // --- THEME LOGIC ---
+            const currentTheme = localStorage.getItem('adm-theme') || 'system';
+            const buttons = document.querySelectorAll('.theme-btn');
+
+            buttons.forEach(btn => {
+                if(btn.dataset.themeVal === currentTheme) {
+                    btn.style.borderColor = 'var(--primary)';
+                    btn.style.color = 'var(--primary)';
+                    btn.style.background = 'var(--primary-light)';
+                }
+                
+                btn.addEventListener('click', () => {
+                    buttons.forEach(b => {
+                        b.style.borderColor = 'var(--border-color)';
+                        b.style.color = 'var(--text-main)';
+                        b.style.background = 'transparent';
+                    });
+                    btn.style.borderColor = 'var(--primary)';
+                    btn.style.color = 'var(--primary)';
+                    btn.style.background = 'var(--primary-light)';
+                    applyTheme(btn.dataset.themeVal);
+                });
+            });
+
+            // --- STORE CONFIG LOGIC ---
+            const configRef = doc(db, "system", "config");
+            
+            // Load existing config
+            try {
+                const snap = await getDoc(configRef);
+                if (snap.exists()) {
+                    const data = snap.data();
+                    if(data.announcement) document.getElementById('cfg-announcement').value = data.announcement;
+                    if(data.deliveryFee) document.getElementById('cfg-delivery').value = data.deliveryFee;
+                }
+            } catch(e) { console.log("Config load error:", e); }
+
+            // Save config
+            document.getElementById('store-config-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById('save-cfg-btn');
+                btn.innerHTML = '<i class="ph-bold ph-spinner ph-spin"></i> Saving...';
+                
+                try {
+                    await setDoc(configRef, {
+                        announcement: document.getElementById('cfg-announcement').value,
+                        deliveryFee: parseFloat(document.getElementById('cfg-delivery').value) || 0
+                    }, { merge: true });
+                    
+                    // Simple inline feedback
+                    btn.innerHTML = '<i class="ph-bold ph-check"></i> Saved!';
+                    setTimeout(() => btn.innerHTML = 'Save Configuration', 2000);
+                } catch(error) {
+                    alert("Failed to save settings.");
+                    btn.innerHTML = 'Save Configuration';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

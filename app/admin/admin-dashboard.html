@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>Admin | Dashboard</title>
+    <!-- <script src="https://unpkg.com/@phosphor-icons/web"></script> -->
+    <link rel="stylesheet" href="admin-style.css"/>
+        <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/> -->
+    <link rel="stylesheet" href="icons/font-aw/css/all.css">
+    <link rel="stylesheet" href="icons/remix/remixicon.css">
+    <script src="icons/phosphor/src/index.js"></script>
+
+    <script>
+        // Set Theme instantly
+        const theme = localStorage.getItem('adm-theme') || 'system';
+        if (theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+        }
+        // Set Sidebar instantly
+        if (localStorage.getItem('sidebar-collapsed') === 'true') {
+            document.documentElement.classList.add('sidebar-is-collapsed');
+        }
+    </script>
+</head>
+<body>
+    <header class="mobile-header">
+        <div class="sidebar-logo"><i class="ph-fill ph-plant"></i> Urban Admin</div>
+        <button class="mobile-menu-btn" id="open-mobile-menu"><i class="ph-bold ph-list"></i></button>
+    </header>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="mobile-bottom-menu" id="bottomMenu">
+        <div class="drag-handle-zone" id="dragZone"><div class="drag-handle"></div></div>
+        <div class="mobile-nav-grid">
+            <a href="admin-dashboard.html" class="mobile-nav-item active"><i class="ph-bold ph-squares-four"></i> Dashboard</a>
+            <a href="admin-orders.html" class="mobile-nav-item"><i class="ph-bold ph-package"></i> Orders</a>
+            <!-- <a href="admin-products.html" class="mobile-nav-item"><i class="ph-bold ph-tag"></i> Products</a> -->
+            <a href="admin-users.html" class="mobile-nav-item"><i class="ph-bold ph-users"></i> Users</a>
+            <a href="admin-settings.html" class="mobile-nav-item "><i class="ph-bold ph-gear"></i> Settings</a>
+        </div>
+    </div>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <i class="ph-fill ph-plant"></i>
+            <span class="logo-text">Urban Admin</span>
+        </div>
+        
+        <nav class="nav-links">
+            <a href="admin-dashboard.html" class="nav-item active"><i class="ph-bold ph-squares-four"></i> <span class="logo-text">Dashboard</span></a>
+            <a href="admin-orders.html" class="nav-item"><i class="ph-bold ph-package"></i> <span class="logo-text">Orders</span></a>
+            <a href="admin-users.html" class="nav-item"><i class="ph-bold ph-users"></i> <span class="logo-text">Users</span></a>
+            <a href="admin-settings.html" class="nav-item"><i class="ph-bold ph-gear"></i> <span class="logo-text">Settings</span></a>
+        </nav>
+
+        <button id="toggle-sidebar" class="sidebar-toggle-btn">
+            <i class="ph-bold ph-caret-double-left"></i>
+            <span class="logo-text">Collapse</span>
+        </button>
+
+        <div class="nav-item logout-btn" style="color: var(--danger); cursor: pointer; padding-top: 0;">
+            <i class="ph-bold ph-sign-out"></i> <span class="logo-text">Logout</span>
+        </div>
+    </aside>
+
+
+
+
+    <main class="main-content">
+        <div class="page-header">
+            <h2 class="page-title">Overview</h2>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="color: #10b981; background: rgba(16,185,129,0.1);"><i class="ph-bold ph-currency-dollar"></i></div>
+                <div class="stat-info"><p>Total Revenue</p><h3 id="stat-revenue">---</h3></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="color: #3b82f6; background: rgba(59,130,246,0.1);"><i class="ph-bold ph-package"></i></div>
+                <div class="stat-info"><p>Total Orders</p><h3 id="stat-orders">0</h3></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="color: #f59e0b; background: rgba(245,158,11,0.1);"><i class="ph-bold ph-tag"></i></div>
+                <div class="stat-info"><p>Products</p><h3 id="stat-products">0</h3></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="color: #8b5cf6; background: rgba(139,92,246,0.1);"><i class="ph-bold ph-users"></i></div>
+                <div class="stat-info"><p>Customers</p><h3 id="stat-users">0</h3></div>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+            
+            <div>
+                <h3 style="margin-bottom: 1rem; font-weight: 800;">Recent Orders</h3>
+                <div class="admin-table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recent-orders-tbody">
+                            <tr><td colspan="4" style="text-align: center;">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div>
+                <h3 style="margin-bottom: 1rem; font-weight: 800;">New Customers</h3>
+                <div class="admin-table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recent-users-tbody">
+                            <tr><td colspan="2" style="text-align: center;">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script type="module" src="admin-core.js"></script>
+    <script type="module">
+        import { db } from "./firebase.js";
+        import { collection, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+        // Helper for status colors
+        function getStatusStyles(status) {
+            if (status === 'Delivered') return 'background: rgba(16,185,129,0.1); color: #10b981;';
+            if (status === 'Processing') return 'background: rgba(245,158,11,0.1); color: #f59e0b;';
+            if (status === 'Shipped') return 'background: rgba(59,130,246,0.1); color: #3b82f6;';
+            if (status === 'Cancelled') return 'background: rgba(239,68,68,0.1); color: #ef4444;';
+            return 'background: var(--border-color); color: var(--text-main);';
+        }
+
+        async function loadDashboard() {
+            try {
+                // Load Products count
+                const products = await getDocs(collection(db, "products"));
+                document.getElementById('stat-products').innerText = products.size;
+
+                // Load Orders & Revenue
+                const orders = await getDocs(collection(db, "orders"));
+                let rev = 0;
+                orders.forEach(d => rev += (d.data().totalAmount || 0));
+                document.getElementById('stat-orders').innerText = orders.size;
+                document.getElementById('stat-revenue').innerText = `EGP${rev.toFixed(2)}`;
+
+                // Widget 1: Recent Orders
+                const qOrders = query(collection(db, "orders"), orderBy("createdAt", "desc"), limit(5));
+                const recentOrders = await getDocs(qOrders);
+                const tbodyOrders = document.getElementById('recent-orders-tbody');
+                tbodyOrders.innerHTML = '';
+                
+                if(recentOrders.empty) tbodyOrders.innerHTML = '<tr><td colspan="4">No orders yet.</td></tr>';
+                recentOrders.forEach(docSnap => {
+                    const data = docSnap.data();
+                    const shortId = docSnap.id.substring(0, 8).toUpperCase();
+                    const styles = getStatusStyles(data.status);
+                    
+                    tbodyOrders.innerHTML += `
+                        <tr>
+                            <td style="font-weight:700; color:var(--primary);">#${shortId}</td>
+                            <td>${data.shippingAddress?.name || 'Unknown'}</td>
+                            <td style="font-weight:800;">EGP${data.totalAmount.toFixed(2)}</td>
+                            <td><span style="${styles} padding:0.25rem 0.5rem; border-radius:0.5rem; font-size:0.75rem; font-weight:700;">${data.status || 'Processing'}</span></td>
+                        </tr>
+                    `;
+                });
+
+                // Widget 2: Recent Users
+                const qUsers = query(collection(db, "users"), orderBy("createdAt", "desc"), limit(5));
+                const recentUsers = await getDocs(qUsers);
+                const tbodyUsers = document.getElementById('recent-users-tbody');
+                tbodyUsers.innerHTML = '';
+                document.getElementById('stat-users').innerText = recentUsers.size; // Update global stat
+
+                if(recentUsers.empty) tbodyUsers.innerHTML = '<tr><td colspan="2">No users yet.</td></tr>';
+                recentUsers.forEach(docSnap => {
+                    const data = docSnap.data();
+                    tbodyUsers.innerHTML += `
+                        <tr>
+                            <td style="font-weight:600;"><i class="ph-fill ph-user" style="color:var(--primary); margin-right:0.5rem;"></i> ${data.fullName || 'User'}</td>
+                            <td style="font-size:0.875rem; color:var(--text-grey);">${data.email}</td>
+                        </tr>
+                    `;
+                });
+
+            } catch(e) { console.error(e); }
+        }
+        loadDashboard();
+    </script>
+</body>
+</html>

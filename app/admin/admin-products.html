@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>Admin | Products</title>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="admin-style.css"/>
+</head>
+<body>
+
+    <header class="mobile-header">
+        <div class="sidebar-logo"><i class="ph-fill ph-plant"></i> Urban Admin</div>
+        <button class="mobile-menu-btn" id="open-mobile-menu"><i class="ph-bold ph-list"></i></button>
+    </header>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="mobile-bottom-menu" id="bottomMenu">
+        <div class="drag-handle-zone" id="dragZone">
+            <div class="drag-handle"></div>
+            <p style="font-size: 0.75rem; color: var(--text-grey); margin-top: 0.5rem; font-weight: 600;">Swipe down to close</p>
+        </div>
+        <div class="mobile-nav-grid">
+            <a href="admin-dashboard.html" class="mobile-nav-item"><i class="ph-bold ph-squares-four"></i> Dashboard</a>
+            <a href="admin-orders.html" class="mobile-nav-item"><i class="ph-bold ph-package"></i> Orders</a>
+            <a href="admin-products.html" class="mobile-nav-item active"><i class="ph-bold ph-tag"></i> Products</a>
+            <a href="admin-users.html" class="mobile-nav-item"><i class="ph-bold ph-users"></i> Users</a>
+            <a href="admin-settings.html" class="mobile-nav-item"><i class="ph-bold ph-gear"></i> Settings</a>
+            <div class="mobile-nav-item logout-btn" style="color: var(--danger);"><i class="ph-bold ph-sign-out"></i> Logout</div>
+        </div>
+    </div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <i class="ph-fill ph-plant"></i>
+            <span class="logo-text">Urban Admin</span>
+            <button id="toggle-sidebar" style="margin-left: auto; background: none; border: none; color: var(--text-grey); cursor: pointer; font-size: 1.25rem;"><i class="ph-bold ph-list"></i></button>
+        </div>
+        <nav class="nav-links">
+            <a href="admin-dashboard.html" class="nav-item"><i class="ph-bold ph-squares-four"></i> <span class="logo-text">Dashboard</span></a>
+            <a href="admin-orders.html" class="nav-item"><i class="ph-bold ph-package"></i> <span class="logo-text">Orders</span></a>
+            <a href="admin-products.html" class="nav-item active"><i class="ph-bold ph-tag"></i> <span class="logo-text">Products</span></a>
+            <a href="admin-users.html" class="nav-item"><i class="ph-bold ph-users"></i> <span class="logo-text">Users</span></a>
+            <a href="admin-settings.html" class="nav-item"><i class="ph-bold ph-gear"></i> <span class="logo-text">Settings</span></a>
+        </nav>
+        <div class="nav-item logout-btn" style="color: var(--danger); margin-top: auto;">
+            <i class="ph-bold ph-sign-out"></i> <span class="logo-text">Logout</span>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h2 class="page-title">Inventory</h2>
+            <button class="btn-main" onclick="openProductModal()">
+                <i class="ph-bold ph-plus"></i> Add Product
+            </button>
+        </div>
+
+        <div class="admin-table-container">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="products-tbody">
+                    <tr><td colspan="5" style="text-align: center;">Loading products...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <div class="modal" id="productModal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 id="modal-title" style="font-weight: 800; font-size: 1.25rem;">Add Product</h3>
+                <button onclick="document.getElementById('productModal').classList.remove('active')" style="background:none; border:none; font-size:1.5rem; color:var(--text-grey); cursor:pointer;"><i class="ph-bold ph-x"></i></button>
+            </div>
+            
+            <form id="product-form" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0 1rem;">
+                <input type="hidden" id="p-id">
+                
+                <div class="input-group" style="grid-column: span 2;">
+                    <label>Product Name</label>
+                    <input type="text" id="p-name" placeholder="e.g., Organic Tomatoes" required />
+                </div>
+                
+                <div class="input-group">
+                    <label>Price ($)</label>
+                    <input type="number" step="0.01" id="p-price" placeholder="4.99" required />
+                </div>
+                
+                <div class="input-group">
+                    <label>Category</label>
+                    <select id="p-cat" required>
+                        <option value="vegetables">Vegetables</option>
+                        <option value="fruits">Fruits</option>
+                        <option value="dairy">Dairy</option>
+                        <option value="poultry">Poultry</option>
+                        <option value="honey">Honey</option>
+                        <option value="livestock">Livestock</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Farm / Vendor Name</label>
+                    <input type="text" id="p-farm" placeholder="e.g., Green Valley Farm" required />
+                </div>
+
+                <div class="input-group">
+                    <label>Unit (Size/Weight)</label>
+                    <input type="text" id="p-unit" placeholder="e.g., 500g Bunch" required />
+                </div>
+                
+                <div class="input-group" style="grid-column: span 2;">
+                    <label>Image URL</label>
+                    <input type="text" id="p-img" placeholder="https://example.com/image.jpg" required />
+                </div>
+                
+                <button type="submit" id="save-product-btn" class="btn-main" style="grid-column: span 2; justify-content: center; margin-top: 1rem; height: 3.5rem;">Save Product</button>
+            </form>
+        </div>
+    </div>
+
+    <script type="module" src="admin-core.js"></script>
+    
+    <script type="module">
+        import { db } from "./firebase.js";
+        import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+        const tbody = document.getElementById('products-tbody');
+        const modal = document.getElementById('productModal');
+
+        // 1. Fetch & Display Products
+        async function loadProducts() {
+            try {
+                const snap = await getDocs(collection(db, "products"));
+                tbody.innerHTML = '';
+                
+                if (snap.empty) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-grey);">No products found in the database. Add one above!</td></tr>';
+                    return;
+                }
+
+                snap.forEach(docSnap => {
+                    const p = docSnap.data();
+                    const id = docSnap.id;
+                    
+                    // Store product data globally so the Edit button can access it
+                    window[`prod_${id}`] = p; 
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><img src="${p.image}" onerror="this.src='https://via.placeholder.com/50'" style="width:45px; height:45px; border-radius:0.5rem; object-fit:cover; background: var(--border-color);"></td>
+                            <td>
+                                <div style="font-weight:700;">${p.name}</div>
+                                <div style="font-size:0.75rem; color:var(--text-grey); font-weight:600;">${p.farm || 'Local Vendor'} • ${p.unit || '1 item'}</div>
+                            </td>
+                            <td><span style="background:var(--primary-light); color:var(--primary); padding:0.25rem 0.5rem; border-radius:0.5rem; font-size:0.75rem; font-weight:700; text-transform:capitalize;">${p.category || 'N/A'}</span></td>
+                            <td style="font-weight:800;">EGP${p.price.toFixed(2)}</td>
+                            <td>
+                                <button class="btn-main" style="padding:0.5rem; background:var(--border-color); color:var(--text-main); margin-right: 0.5rem;" onclick="editProduct('${id}')"><i class="ph-bold ph-pencil-simple"></i></button>
+                                <button class="btn-danger" style="padding:0.5rem;" onclick="deleteProduct('${id}')"><i class="ph-bold ph-trash"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch(e) { 
+                console.error(e);
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--danger);">Failed to load products. Check permissions.</td></tr>';
+            }
+        }
+        
+        // Load on start
+        loadProducts();
+
+        // 2. Open Modal to Add New
+        window.openProductModal = () => {
+            document.getElementById('product-form').reset();
+            document.getElementById('p-id').value = '';
+            document.getElementById('modal-title').innerText = "Add New Product";
+            modal.classList.add('active');
+        }
+
+        // 3. Open Modal to Edit Existing
+        window.editProduct = (id) => {
+            const p = window[`prod_${id}`];
+            document.getElementById('p-id').value = id;
+            document.getElementById('p-name').value = p.name;
+            document.getElementById('p-price').value = p.price;
+            document.getElementById('p-cat').value = p.category || 'vegetables';
+            document.getElementById('p-farm').value = p.farm || '';
+            document.getElementById('p-unit').value = p.unit || '';
+            document.getElementById('p-img').value = p.image;
+            
+            document.getElementById('modal-title').innerText = "Edit Product";
+            modal.classList.add('active');
+        }
+
+        // 4. Delete Product
+        window.deleteProduct = async (id) => {
+            if(confirm("Are you sure you want to permanently delete this product?")) {
+                try {
+                    await deleteDoc(doc(db, "products", id));
+                    loadProducts(); // Refresh table
+                } catch(e) {
+                    alert("Failed to delete product.");
+                    console.error(e);
+                }
+            }
+        }
+
+        // 5. Form Submit (Save / Update)
+        document.getElementById('product-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('save-product-btn');
+            btn.innerHTML = '<i class="ph-bold ph-spinner ph-spin"></i> Saving...';
+            btn.disabled = true;
+
+            const id = document.getElementById('p-id').value;
+            const data = {
+                name: document.getElementById('p-name').value,
+                price: parseFloat(document.getElementById('p-price').value),
+                category: document.getElementById('p-cat').value,
+                farm: document.getElementById('p-farm').value,
+                unit: document.getElementById('p-unit').value,
+                image: document.getElementById('p-img').value,
+                updatedAt: serverTimestamp()
+            };
+
+            try {
+                if (id) {
+                    // Update existing
+                    await updateDoc(doc(db, "products", id), data);
+                } else {
+                    // Create new
+                    data.createdAt = serverTimestamp();
+                    await addDoc(collection(db, "products"), data);
+                }
+                modal.classList.remove('active');
+                loadProducts(); // Refresh table
+            } catch (error) {
+                console.error(error);
+                alert("Failed to save product.");
+            } finally {
+                btn.innerHTML = 'Save Product';
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

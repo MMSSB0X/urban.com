@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>Driver Dashboard</title>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background: #f8fafc; color: #0f172a; }
+        .header { background: #10b981; color: white; padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 1.5rem 1.5rem; box-shadow: 0 4px 10px rgba(16,185,129,0.2); position: sticky; top:0; z-index:10;}
+        .card { background: white; margin: 1rem; border-radius: 1rem; padding: 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .btn { background: #10b981; color: white; border: none; padding: 1rem; border-radius: 0.75rem; font-weight: 700; width: 100%; font-size: 1rem; cursor: pointer; display: flex; justify-content: center; gap: 0.5rem; align-items: center; margin-top: 1rem;}
+        .btn-outline { background: transparent; color: #3b82f6; border: 2px solid #3b82f6; }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div>
+            <h2 style="font-size: 1.25rem; font-weight: 800;">Driver Panel</h2>
+            <p style="font-size: 0.8rem; opacity: 0.9;" id="driver-name">Loading...</p>
+        </div>
+        <button id="driver-logout" style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;"><i class="ph-bold ph-sign-out"></i></button>
+    </header>
+
+    <div id="orders-list">
+        <div style="text-align: center; padding: 2rem;"><i class="ph-bold ph-spinner ph-spin" style="font-size: 2rem; color:#10b981;"></i></div>
+    </div>
+
+    <script type="module">
+        import { auth, db } from "./firebase.js";
+        import { collection, query, where, getDocs, updateDoc, doc, addDoc, serverTimestamp, orderBy } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) return window.location.replace("admin-login.html"); // Force to login
+            
+            document.getElementById('driver-name').innerText = user.email;
+
+            // Fetch Orders that are Shipped or Processing
+            const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
+            const snap = await getDocs(q);
+            const list = document.getElementById('orders-list');
+            list.innerHTML = '';
+
+            snap.forEach(docSnap => {
+                const o = docSnap.data();
+                if(o.status === 'Delivered' || o.status === 'Cancelled') return; // Skip finished
+
+                const id = docSnap.id;
+                list.innerHTML += `
+                    <div class="card">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
+                            <h3 style="font-weight:800;">#${id.substring(0,8).toUpperCase()}</h3>
+                            <span style="background: rgba(245,158,11,0.1); color: #f59e0b; padding:0.2rem 0.5rem; border-radius:0.5rem; font-size:0.75rem; font-weight:700;">${o.status}</span>
+                        </div>
+                        <p style="font-size:0.875rem; color:#64748b; margin-bottom: 0.5rem;"><i class="ph-fill ph-map-pin"></i> ${o.shippingAddress?.address}, ${o.shippingAddress?.city}</p>
+                        <p style="font-size:0.875rem; color:#64748b; font-weight:700;">Customer ID: ${o.userId}</p>
+                        
+                        <button class="btn btn-outline" onclick="sendCode('${id}', '${o.userId}')">
+                            <i class="ph-bold ph-paper-plane-tilt"></i> Send OTP to Customer
+                        </button>
+                        
+                        <button class="btn" onclick="markDelivered('${id}')" style="background:#0f172a;">
+                            <i class="ph-bold ph-check-circle"></i> Force Mark Delivered
+                        </button>
+                    </div>
+                `;
+            });
+            if(list.innerHTML === '') list.innerHTML = '<div style="text-align:center; padding:2rem; color:#64748b;">No active deliveries.</div>';
+        });
+
+    // Generate and Send Code to User's Inbox
+        window.sendCode = async (orderId, userId) => {
+            const code = Math.floor(1000 + Math.random() * 9000).toString(); 
+            try {
+                // 1. Save code to order
+                await updateDoc(doc(db, "orders", orderId), { verificationCode: code, status: "Out for Delivery" });
+                
+                // 2. Send Message to User Inbox
+                await addDoc(collection(db, "messages"), {
+                    userId: userId,
+                    sender: "Delivery Agent",
+                    type: "code",
+                    content: `Your driver has arrived! Your verification code is: ${code}`,
+                    read: false,
+                    orderId: orderId, // <-- WE NOW SAVE THE ORDER ID HERE
+                    verified: false,  // <-- NEW VERIFICATION STATUS
+                    createdAt: serverTimestamp()
+                });
+                alert("Code sent to customer's inbox!");
+                location.reload();
+            } catch(e) { alert("Error sending code."); }
+        };
+        // Driver override (if user can't use their phone)
+        window.markDelivered = async (orderId) => {
+            if(confirm("Mark as delivered without user OTP?")) {
+                await updateDoc(doc(db, "orders", orderId), { status: "Delivered" });
+                location.reload();
+            }
+        };
+
+        document.getElementById('driver-logout').addEventListener('click', () => signOut(auth));
+    </script>
+</body>
+</html>

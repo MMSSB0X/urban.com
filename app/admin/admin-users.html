@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>Admin | Users</title>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="admin-style.css"/>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
+        <script>
+        // Set Theme instantly
+        const theme = localStorage.getItem('adm-theme') || 'system';
+        if (theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+        }
+        // Set Sidebar instantly
+        if (localStorage.getItem('sidebar-collapsed') === 'true') {
+            document.documentElement.classList.add('sidebar-is-collapsed');
+        }
+    </script>
+</head>
+<body>
+
+    <header class="mobile-header">
+        <div class="sidebar-logo"><i class="ph-fill ph-plant"></i> Urban Admin</div>
+        <button class="mobile-menu-btn" id="open-mobile-menu"><i class="ph-bold ph-list"></i></button>
+    </header>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="mobile-bottom-menu" id="bottomMenu">
+        <div class="drag-handle-zone" id="dragZone"><div class="drag-handle"></div></div>
+        <div class="mobile-nav-grid">
+            <a href="admin-dashboard.html" class="mobile-nav-item"><i class="ph-bold ph-squares-four"></i> Dashboard</a>
+            <a href="admin-orders.html" class="mobile-nav-item"><i class="ph-bold ph-package"></i> Orders</a>
+            <a href="admin-users.html" class="mobile-nav-item active"><i class="ph-bold ph-users"></i> Users</a>
+            <a href="admin-settings.html" class="mobile-nav-item"><i class="ph-bold ph-gear"></i> Settings</a>
+        </div>
+    </div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <i class="ph-fill ph-plant"></i>
+            <span class="logo-text">Urban Admin</span>
+        </div>
+        
+        <nav class="nav-links">
+            <a href="admin-dashboard.html" class="nav-item "><i class="ph-bold ph-squares-four"></i> <span class="logo-text">Dashboard</span></a>
+            <a href="admin-orders.html" class="nav-item"><i class="ph-bold ph-package"></i> <span class="logo-text">Orders</span></a>
+            <a href="admin-users.html " class="nav-item active"><i class="ph-bold ph-users"></i> <span class="logo-text">Users</span></a>
+            <a href="admin-settings.html" class="nav-item"><i class="ph-bold ph-gear"></i> <span class="logo-text">Settings</span></a>
+        </nav>
+
+        <button id="toggle-sidebar" class="sidebar-toggle-btn">
+            <i class="ph-bold ph-caret-double-left"></i>
+            <span class="logo-text">Collapse</span>
+        </button>
+
+        <div class="nav-item logout-btn" style="color: var(--danger); cursor: pointer; padding-top: 0;">
+            <i class="ph-bold ph-sign-out"></i> <span class="logo-text">Logout</span>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h2 class="page-title">Manage Users</h2>
+        </div>
+
+        <div class="admin-table-container">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>User Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Role</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="users-tbody">
+                    <tr><td colspan="5" style="text-align: center;">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <div class="modal" id="userModal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3 style="font-weight: 800;">Edit User Account</h3>
+                <button onclick="document.getElementById('userModal').classList.remove('active')" style="background:none; border:none; font-size:1.5rem; color:var(--text-grey); cursor:pointer;"><i class="ph-bold ph-x"></i></button>
+            </div>
+            
+            <form id="edit-user-form" style="display: flex; flex-direction: column; gap: 1rem;">
+                <input type="hidden" id="eu-id">
+                
+                <div class="input-group">
+                    <label>Full Name</label>
+                    <input type="text" id="eu-name" required />
+                </div>
+                
+                <div class="input-group">
+                    <label>Email (Cannot change here)</label>
+                    <input type="text" id="eu-email" disabled style="opacity: 0.6;" />
+                </div>
+
+                <div class="input-group">
+                    <label>Phone Number</label>
+                    <input type="text" id="eu-phone" />
+                </div>
+
+                <div class="input-group">
+                    <label>Account Role</label>
+                    <select id="eu-role" required>
+                        <option value="customer">Customer</option>
+                        <option value="admin">Administrator</option>
+                    </select>
+                </div>
+                
+                <button type="submit" id="save-user-btn" class="btn-main" style="justify-content: center; margin-top: 1rem; height: 3.5rem;">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <script type="module" src="admin-core.js"></script>
+    <script type="module">
+        import { db } from "./firebase.js";
+        import { collection, getDocs, updateDoc, deleteDoc, doc, orderBy, query } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+        const tbody = document.getElementById('users-tbody');
+        const modal = document.getElementById('userModal');
+
+        async function loadUsers() {
+            try {
+                const q = query(collection(db, "users"), orderBy("createdAt", "desc"));
+                const snap = await getDocs(q);
+                tbody.innerHTML = '';
+                
+                if(snap.empty) tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No users found.</td></tr>';
+
+                snap.forEach(docSnap => {
+                    const u = docSnap.data();
+                    const id = docSnap.id;
+                    window[`user_${id}`] = u; // Save for modal
+
+                    const roleBadge = u.role === 'admin' 
+                        ? '<span style="background:rgba(59,130,246,0.1); color:#3b82f6; padding:0.25rem 0.5rem; border-radius:0.5rem; font-size:0.75rem; font-weight:700;">Admin</span>' 
+                        : '<span style="background:var(--border-color); color:var(--text-grey); padding:0.25rem 0.5rem; border-radius:0.5rem; font-size:0.75rem; font-weight:700;">Customer</span>';
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td style="font-weight:700;">${u.fullName || 'Unknown'}</td>
+                            <td>${u.email}</td>
+                            <td>${u.phone || '---'}</td>
+                            <td>${roleBadge}</td>
+                            <td>
+                                <button class="btn-main" style="padding:0.5rem; background:var(--border-color); color:var(--text-main); margin-right: 0.5rem;" onclick="openEditUser('${id}')"><i class="ph-bold ph-pencil-simple"></i></button>
+                                <button class="btn-danger" style="padding:0.5rem;" onclick="deleteUser('${id}')"><i class="ph-bold ph-trash"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch(e) { console.error(e); }
+        }
+        loadUsers();
+
+        // Open Edit Modal
+        window.openEditUser = (id) => {
+            const u = window[`user_${id}`];
+            document.getElementById('eu-id').value = id;
+            document.getElementById('eu-name').value = u.fullName || '';
+            document.getElementById('eu-email').value = u.email || '';
+            document.getElementById('eu-phone').value = u.phone || '';
+            document.getElementById('eu-role').value = u.role || 'customer';
+            modal.classList.add('active');
+        }
+
+        // Save User Edits
+        document.getElementById('edit-user-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('save-user-btn');
+            btn.innerText = "Saving...";
+            
+            const id = document.getElementById('eu-id').value;
+            try {
+                await updateDoc(doc(db, "users", id), {
+                    fullName: document.getElementById('eu-name').value,
+                    phone: document.getElementById('eu-phone').value,
+                    role: document.getElementById('eu-role').value
+                });
+                modal.classList.remove('active');
+                loadUsers();
+            } catch(error) {
+                alert("Failed to update user.");
+            } finally {
+                btn.innerText = "Save Changes";
+            }
+        });
+
+        // Delete User Data
+        window.deleteUser = async (id) => {
+            if(confirm("Delete this user's database record? (They will need to sign up again)")) {
+                try {
+                    await deleteDoc(doc(db, "users", id));
+                    loadUsers();
+                } catch(e) { alert("Failed to delete"); }
+            }
+        }
+    </script>
+</body>
+</html>
